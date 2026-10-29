@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "鲸译 · 划词翻译",
+  "version": "1.0.0",
+  "description": "在任意网页选中文字，点「翻译」在中英之间互译；保留原有换行，只在点击后发送文字。",
+  "minimum_chrome_version": "102",
+  "permissions": [
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://edge.microsoft.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true,
+      "match_about_blank": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "content.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "鲸译 · 划词翻译",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  }
+}
