@@ -2,8 +2,8 @@
  * Standalone browser-extension content script.
  *
  * It runs in every frame (including cross-origin frames when the extension has
- * host access), renders the whale toolbar inside a shadow root so page CSS
- * cannot touch it, and sends translation requests to the MV3 service worker.
+ * host access), renders the whale toolbar in a fixed page overlay, and sends
+ * translation requests to the MV3 service worker.
  */
 ;(() => {
   const HOST_ID = 'whale-translator-extension-root'
@@ -281,41 +281,12 @@
   async function boot() {
     const host = document.createElement('div')
     host.id = HOST_ID
+    host.className = 'wt-root'
     host.setAttribute('data-whale-translator', 'host')
-    host.style.cssText = 'all:initial;position:fixed;inset:0;z-index:2147483647;pointer-events:none;'
-    const shadow = host.attachShadow({ mode: 'open' })
+    host.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;z-index:2147483647;pointer-events:auto;display:none;'
+    host.innerHTML = BAR_MARKUP + PANEL_MARKUP + TOAST_MARKUP
 
-    let cssText = ''
-    try {
-      const response = await fetch(chrome.runtime.getURL('content.css'))
-      if (response.ok) cssText = await response.text()
-    } catch {
-      // The toolbar still works without page CSS; keep the fallback below.
-    }
-    if (cssText && typeof CSSStyleSheet === 'function') {
-      try {
-        const sheet = new CSSStyleSheet()
-        sheet.replaceSync(cssText)
-        shadow.adoptedStyleSheets = [sheet]
-      } catch {
-        const style = document.createElement('style')
-        style.textContent = cssText
-        shadow.appendChild(style)
-      }
-    } else if (cssText) {
-      const style = document.createElement('style')
-      style.textContent = cssText
-      shadow.appendChild(style)
-    } else {
-      const style = document.createElement('style')
-      style.textContent = '.wt-root{position:fixed;inset:0;z-index:2147483647;pointer-events:none}.wt-bar-wrap,.wt-panel{position:fixed;pointer-events:auto;background:#fff;color:#101828;border:1px solid #ccd;padding:8px;border-radius:12px}.wt-bar-wrap{background:#08182c;color:#fff}'
-      shadow.appendChild(style)
-    }
-
-    const root = document.createElement('div')
-    root.className = 'wt-root'
-    shadow.appendChild(root)
-    root.innerHTML = BAR_MARKUP + PANEL_MARKUP + TOAST_MARKUP
+    const root = host
 
     const barWrap = root.querySelector('.wt-bar-wrap')
     const more = root.querySelector('.wt-more')
@@ -349,9 +320,8 @@
 
     function isOurNode(node) {
       if (!node) return false
-      if (node.getRootNode && node.getRootNode() === shadow) return true
       const element = node.nodeType === 1 ? node : node.parentElement
-      return Boolean(element && element.closest(`#${HOST_ID}`))
+      return Boolean(element && (element === host || host.contains(element)))
     }
 
     function isForbidden(node) {
@@ -470,10 +440,12 @@
 
     function render() {
       if (!state) {
+        host.style.display = 'none'
         barWrap.hidden = true
         panel.hidden = true
         return
       }
+      host.style.display = 'block'
       const isBar = state.phase === 'bar'
       const isPanel = state.phase === 'panel' || state.phase === 'summary'
       const isSummary = state.phase === 'summary'
@@ -481,9 +453,11 @@
       panel.hidden = !isPanel
 
       if (isBar) {
-        barWrap.style.left = `${state.bar.left}px`
-        barWrap.style.top = `${state.bar.top}px`
-        barWrap.style.width = `${state.bar.width}px`
+        host.style.left = `${state.bar.left}px`
+        host.style.top = `${state.bar.top}px`
+        host.style.width = `${state.bar.width}px`
+        host.style.height = `${state.more ? BAR_HEIGHT + 8 + 200 : BAR_HEIGHT}px`
+        host.style.maxHeight = 'none'
         speakIcon.innerHTML = icon(state.speaking ? 'stop' : 'speaker')
         speakLabel.textContent = state.speaking ? '停止' : '朗读'
         more.hidden = !state.more
@@ -492,9 +466,11 @@
       }
 
       if (isPanel) {
-        panel.style.left = `${state.panel.left}px`
-        panel.style.top = `${state.panel.top}px`
-        panel.style.width = `${state.panel.width}px`
+        host.style.left = `${state.panel.left}px`
+        host.style.top = `${state.panel.top}px`
+        host.style.width = `${state.panel.width}px`
+        host.style.height = 'auto'
+        host.style.maxHeight = `${state.panel.maxHeight}px`
         panel.style.maxHeight = `${state.panel.maxHeight}px`
         langs.hidden = isSummary
         title.textContent = isSummary ? '鲸语摘要' : '鲸译'
@@ -527,6 +503,7 @@
     }
 
     function hideAll() {
+      host.style.display = 'none'
       barWrap.hidden = true
       panel.hidden = true
       more.hidden = true
@@ -870,7 +847,7 @@
     })
 
     function eventInsideUi(event) {
-      return event.composedPath().includes(host)
+      return event.target === host || host.contains(event.target) || event.composedPath().includes(host)
     }
 
     const onMouseUp = (event) => {

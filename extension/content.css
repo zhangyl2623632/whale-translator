@@ -1,21 +1,18 @@
-:host {
-  all: initial;
-}
-
-* {
+.wt-root,
+.wt-root * {
   box-sizing: border-box;
 }
 
-button,
-select {
+.wt-root button,
+.wt-root select {
   font: inherit;
 }
 
 .wt-root {
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  pointer-events: none;
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  pointer-events: auto;
   font-family: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
   font-size: 14px;
   line-height: 1.5;
@@ -28,7 +25,8 @@ select {
 }
 
 .wt-bar-wrap {
-  position: fixed;
+  position: relative;
+  width: 100%;
   pointer-events: auto;
   animation: wt-splash .19s cubic-bezier(.2, .8, .2, 1);
 }
@@ -257,7 +255,8 @@ select {
 }
 
 .wt-panel {
-  position: fixed;
+  position: relative;
+  width: 100%;
   pointer-events: auto;
   display: flex;
   flex-direction: column;

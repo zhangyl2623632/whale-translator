@@ -19,7 +19,7 @@
 - 选中文字后浮出鲸鱼工具栏；点击 **翻译** 才发送文字，不会自动请求。
 - 中英自动方向，保留原有换行；结果只显示译文。
 - 支持普通网页、`contenteditable` 富文本编辑器（Jira / Confluence / Notion 等）和 iframe 内的选择。
-- 工具栏渲染在 shadow root 里，页面 CSS 不会污染它。
+- 工具栏使用独立注入的 `wt-` 前缀样式（`content.css`），避免被常见页面样式污染；页面只会在工具栏区域接收点击。
 - 翻译走扩展的 MV3 service worker（有 `edge.microsoft.com` host permission），不经过 DSH 进程，因此 DSH 关闭也能用。
 - 首次加载会预热 service worker / TLS；失败时快速提示并给重试按钮，不再等慢速备用接口。
 
