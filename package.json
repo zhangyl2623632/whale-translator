@@ -11,7 +11,7 @@
   },
   "homepage": "https://github.com/zhangyl2623632/whale-translator#readme",
   "scripts": {
-    "test": "node --test test"
+    "test": "node --test test/translate.test.js test/route.test.js test/extension-core.test.js test/client-module.test.js"
   },
   "exports": {
     ".": "./index.js",
