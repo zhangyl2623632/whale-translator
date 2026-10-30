@@ -521,12 +521,16 @@ function createHandler(token = ROUTE_TOKEN) {
       sendJson(res, 403, { ok: false, error: 'cross-site-request-rejected' })
       return
     }
+    if (req.method === 'GET') {
+      sendJson(res, 200, { ok: true, token })
+      return
+    }
     if (req.headers[TOKEN_HEADER] !== token) {
-      sendJson(res, 403, { ok: false, error: 'unauthorized', message: '翻译鉴权失败，请刷新页面。' })
+      sendJson(res, 403, { ok: false, error: 'unauthorized', message: '翻译鉴权失败，请刷新页面或重启 DSH。' })
       return
     }
     if (req.method !== 'POST') {
-      res.setHeader('allow', 'POST')
+      res.setHeader('allow', 'GET, POST')
       sendJson(res, 405, { ok: false, error: 'method-not-allowed' })
       return
     }

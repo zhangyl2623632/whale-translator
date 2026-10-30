@@ -301,8 +301,27 @@ body[data-ds-dark-theme] .wt-skeleton i{background-image:linear-gradient(90deg,r
       }
     }
 
+    async function readRouteToken(signal) {
+      const fromMeta = document.querySelector('meta[name="whale-translator-token"]')?.getAttribute('content') || ''
+      if (fromMeta) return fromMeta
+      try {
+        const response = await fetch(new URL(ROUTE, document.baseURI).toString(), {
+          method: 'GET',
+          cache: 'no-store',
+          credentials: 'same-origin',
+          headers: { accept: 'application/json' },
+          signal,
+        })
+        if (!response.ok) return ''
+        const data = await response.json().catch(() => null)
+        return data && typeof data.token === 'string' ? data.token : ''
+      } catch {
+        return ''
+      }
+    }
+
     async function requestTranslation(payload, signal) {
-      const token = document.querySelector('meta[name="whale-translator-token"]')?.getAttribute('content') || ''
+      const token = await readRouteToken(signal)
       const response = await fetch(new URL(ROUTE, document.baseURI).toString(), {
         method: 'POST',
         cache: 'no-store',

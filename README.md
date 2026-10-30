@@ -128,7 +128,7 @@ The extension sends text only after **Translate** is clicked. It keeps no histor
 
 ## Security status
 
-The DSH route requires a **per-process page token** in addition to the same-origin, `application/json`, and body-size checks. The token is generated when the host plugin loads, injected into the DSH page head as a meta tag, and sent by the client as `x-whale-translator-token`. Requests without the token receive `403` and do not reach Bing. The token rotates when the host restarts; refresh the DSH page after a host reload.
+The DSH route requires a **per-process page token** in addition to the same-origin, `application/json`, and body-size checks. The token is generated when the host plugin loads, injected into the DSH page head as a meta tag, and sent by the client as `x-whale-translator-token`. If the meta tag is missing, the client fetches the token from a same-origin `GET` on the same route. Requests without the token receive `403` and do not reach Bing. The token rotates when the host restarts; refresh the DSH page, and fully restart DSH if the running client predates the host change.
 
 The route does not store or log selected text. It is still not a replacement for DSH’s own authentication if the Web server is exposed beyond localhost; keep the server on localhost or behind your normal access controls.
 
@@ -148,7 +148,7 @@ These are the remaining medium-risk items from the code review.
 | Toolbar appears but Translate does nothing | Check the extension’s **Errors** button on `edge://extensions`; reload the extension; try a normal `http(s)` page. |
 | “扩展已更新或后台未启动，请刷新页面后重试” | Reloading an unpacked extension invalidates pages that were already open. Refresh the page, or use the card’s **刷新页面** button; if it persists, reload the extension and refresh again. |
 | Translation fails with HTTP 429/timeout | The public endpoint is throttled or unreachable. Wait a moment and press **Retry**; there is no automatic slow fallback. |
-| “翻译鉴权失败，请刷新页面” | The host plugin regenerated its page token. Refresh the DSH page; if it persists, restart DSH. |
+| “翻译鉴权失败，请刷新页面或重启 DSH” | The host plugin regenerated its page token. Refresh the DSH page; if it persists, fully restart DSH. |
 | First translation is slow | The service worker or TLS connection is cold. The extension warms it on page load; a retry is usually faster. |
 | Extension disappears after restarting Edge | The unpacked extension depends on its folder path. Keep the folder in place; reload it from `edge://extensions`. |
 | `.crx` install is blocked | A CRX still needs Developer mode or an enterprise policy. Use the store or policy path for a Developer-mode-free install. |

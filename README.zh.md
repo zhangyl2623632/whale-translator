@@ -128,7 +128,7 @@
 
 ## 安全状态
 
-DSH 路由现在要求**按进程生成的页面 token**，并保留 same-origin、`application/json`、body 大小校验。token 在宿主插件加载时生成，作为 meta 注入 DSH 页面 head，客户端用 `x-whale-translator-token` 发送。没有 token 的请求会收到 `403`，不会到达 Bing。宿主重启后 token 会轮换；请刷新 DSH 页面。
+DSH 路由现在要求**按进程生成的页面 token**，并保留 same-origin、`application/json`、body 大小校验。token 在宿主插件加载时生成，作为 meta 注入 DSH 页面 head，客户端用 `x-whale-translator-token` 发送；如果页面里没有 meta，客户端会从同一路由的 same-origin `GET` 取 token。没有 token 的请求会收到 `403`，不会到达 Bing。宿主重启后 token 会轮换；请刷新 DSH 页面，如果运行中的客户端早于宿主代码，需要完全重启 DSH。
 
 路由不存储、不记录选中文字。如果 DSH Web 服务被暴露到 localhost 之外，仍应依赖 DSH 自身的鉴权；请保持 localhost 或置于常规访问控制之后。
 
@@ -148,7 +148,7 @@ DSH 路由现在要求**按进程生成的页面 token**，并保留 same-origin
 | 工具栏出现但点翻译没反应 | 在 `edge://extensions` 查看扩展的 **错误**；重载扩展；换一个普通 `http(s)` 页面重试。 |
 | 提示“扩展已更新或后台未启动，请刷新页面后重试” | 重载解压缩扩展会让已经打开的页面失效。刷新页面，或点卡片里的 **刷新页面**；若仍失败，重载扩展后再刷新。 |
 | 翻译报 HTTP 429 / 超时 | 公共端点被限流或不可达；稍等后点 **重试**，不会自动走慢速兜底。 |
-| 提示“翻译鉴权失败，请刷新页面” | 宿主插件重新生成了页面 token；刷新 DSH 页面。若仍失败，重启 DSH。 |
+| 提示“翻译鉴权失败，请刷新页面或重启 DSH” | 宿主插件重新生成了页面 token；刷新 DSH 页面。若仍失败，完全重启 DSH。 |
 | 第一次翻译很慢 | service worker 或 TLS 连接是冷的；扩展会在页面加载时预热，重试通常更快。 |
 | 重启 Edge 后扩展消失 | 解压缩扩展依赖文件夹路径；保留目录，在 `edge://extensions` 重新加载。 |
 | `.crx` 安装被阻止 | CRX 仍需开发者模式或企业策略；免开发者模式请走商店或策略。 |

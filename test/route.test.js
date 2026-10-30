@@ -88,6 +88,29 @@ test('route translates a same-origin JSON request', async () => {
   })
 })
 
+test('route issues the live token to a same-origin GET', async () => {
+  await withServer(async (origin, token) => {
+    const response = await fetch(`${origin}/api/dsh/whale-translator/translate`, {
+      method: 'GET',
+      headers: { origin, accept: 'application/json' },
+    })
+    assert.equal(response.status, 200)
+    const data = await response.json()
+    assert.equal(data.ok, true)
+    assert.equal(data.token, token)
+  })
+})
+
+test('route rejects a cross-site token request', async () => {
+  await withServer(async (origin) => {
+    const response = await fetch(`${origin}/api/dsh/whale-translator/translate`, {
+      method: 'GET',
+      headers: { origin: 'http://evil.test', accept: 'application/json' },
+    })
+    assert.equal(response.status, 403)
+  })
+})
+
 test('route rejects a request without the page token', async () => {
   await withServer(async (origin, token) => {
     const missing = await fetch(`${origin}/api/dsh/whale-translator/translate`, {
@@ -127,7 +150,7 @@ test('route rejects non-JSON content types and non-POST methods', async () => {
     assert.equal(unsupported.status, 415)
 
     const notAllowed = await fetch(`${origin}/api/dsh/whale-translator/translate`, {
-      method: 'GET',
+      method: 'PUT',
       headers: { origin, 'x-whale-translator-token': token },
     })
     assert.equal(notAllowed.status, 405)
