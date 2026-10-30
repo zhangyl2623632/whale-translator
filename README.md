@@ -146,6 +146,7 @@ These are the remaining medium-risk items from the code review.
 | Toolbar never appears in DSH | Is the plugin enabled? Does the selection start outside `input`/`textarea`/`contenteditable`/`pre`/`code`? Is the plugin client bundle the current revision? Restart DSH after edits. |
 | Toolbar never appears in the browser | Is the extension enabled? Is **Site access** set to **On all sites**? Is the page an `edge://`/`chrome://` page or the extension store? Reload the page after installing/reloading the extension. |
 | Toolbar appears but Translate does nothing | Check the extension’s **Errors** button on `edge://extensions`; reload the extension; try a normal `http(s)` page. |
+| “扩展已更新或后台未启动，请刷新页面后重试” | Reloading an unpacked extension invalidates pages that were already open. Refresh the page, or use the card’s **刷新页面** button; if it persists, reload the extension and refresh again. |
 | Translation fails with HTTP 429/timeout | The public endpoint is throttled or unreachable. Wait a moment and press **Retry**; there is no automatic slow fallback. |
 | “翻译鉴权失败，请刷新页面” | The host plugin regenerated its page token. Refresh the DSH page; if it persists, restart DSH. |
 | First translation is slow | The service worker or TLS connection is cold. The extension warms it on page load; a retry is usually faster. |

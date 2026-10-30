@@ -16,6 +16,8 @@ This folder is the unpacked Manifest V3 extension. The full product manual cover
 > **Developer mode is required for an unpacked extension.** A `.crx` file alone does not remove this requirement; a store listing or an enterprise policy is needed for a Developer-mode-free install. See the [English manual](../README.md#install) or [中文手册](../README.zh.md#安装).
 >
 > **解压缩扩展必须开启开发者模式。** 只装 `.crx` 不能绕过；免开发者模式需要商店上架或企业策略。详见 [中文手册](../README.zh.md#安装)。
+>
+> **After clicking Reload in `edge://extensions`, refresh every open page before using the toolbar.** Reloading an unpacked extension invalidates the content script on pages that were already open. / **在扩展页点“重新加载”后，请刷新所有已打开页面再使用工具栏**；重载会让旧页面的 content script 失效。
 
 ## Scope / 范围
 

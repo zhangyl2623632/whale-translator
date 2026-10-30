@@ -425,8 +425,9 @@
         const retry = document.createElement('button')
         retry.type = 'button'
         retry.className = 'wt-retry'
-        retry.dataset.act = 'retry'
-        retry.innerHTML = `${icon('refresh', 13)}重试`
+        const needsReload = state.errorCode === 'CONTEXT_INVALIDATED' || state.errorCode === 'MESSAGING_FAILED'
+        retry.dataset.act = needsReload ? 'reload-page' : 'retry'
+        retry.innerHTML = `${icon('refresh', 13)}${needsReload ? '刷新页面' : '重试'}`
         error.append(errorTitle, errorText, retry)
         content.appendChild(error)
         return
@@ -557,6 +558,7 @@
         result: '',
         summary: '',
         error: '',
+        errorCode: '',
         provider: 'bing',
         more: false,
         speaking: false,
@@ -573,6 +575,17 @@
         if (dismissed && dismissed.text === snapshot.text) return
         openBar(snapshot)
       }, delay == null ? 0 : delay)
+    }
+
+    function messagingFailure(raw) {
+      const text = String(raw || '')
+      const stale = /extension context invalidated|receiving end does not exist|could not establish connection|message port closed/i.test(text)
+      const message = stale
+        ? '扩展已更新或后台未启动，请刷新页面后重试。'
+        : (/[\u4e00-\u9fff]/.test(text) ? text : '翻译后台通信失败，请刷新页面后重试。')
+      const error = new Error(message)
+      error.code = stale ? 'CONTEXT_INVALIDATED' : 'MESSAGING_FAILED'
+      return error
     }
 
     function translateViaBackground(text, targetMode, signal) {
@@ -601,7 +614,7 @@
           }, (response) => {
             const runtimeError = chrome.runtime.lastError
             if (runtimeError) {
-              finish(reject, new Error(runtimeError.message || '扩展通信失败。'))
+              finish(reject, messagingFailure(runtimeError.message))
               return
             }
             if (!response) {
@@ -617,7 +630,7 @@
             finish(reject, error)
           })
         } catch (error) {
-          finish(reject, error)
+          finish(reject, messagingFailure(error && error.message))
         }
       })
     }
@@ -640,12 +653,14 @@
       state.result = ''
       state.summary = ''
       state.error = ''
+      state.errorCode = ''
       state.more = false
       render()
 
       if (state.text.length > MAX_TEXT) {
         state.status = 'error'
         state.error = `一次最多翻译 ${MAX_TEXT} 个字符，请缩短选区。`
+        state.errorCode = 'TEXT_TOO_LONG'
         abortRequest = null
         render()
         return
@@ -657,6 +672,7 @@
         if (!state) return
         state.status = 'error'
         state.error = '翻译超时，请重试。'
+        state.errorCode = 'TIMEOUT'
         render()
       }, 15_000)
 
@@ -677,6 +693,7 @@
           if (!message) return
           state.status = 'error'
           state.error = message
+          state.errorCode = error.code || ''
           render()
         })
         .finally(() => {
@@ -829,6 +846,7 @@
         render()
       } else if (act === 'close') close()
       else if (act === 'back') backToBar()
+      else if (act === 'reload-page') window.location.reload()
       else if (act === 'retry') beginTranslation(state.targetMode || 'auto')
       else if (act === 'read-result') {
         const isSummary = state.phase === 'summary'
