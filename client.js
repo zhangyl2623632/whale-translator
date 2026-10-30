@@ -302,11 +302,16 @@ body[data-ds-dark-theme] .wt-skeleton i{background-image:linear-gradient(90deg,r
     }
 
     async function requestTranslation(payload, signal) {
+      const token = document.querySelector('meta[name="whale-translator-token"]')?.getAttribute('content') || ''
       const response = await fetch(new URL(ROUTE, document.baseURI).toString(), {
         method: 'POST',
         cache: 'no-store',
         credentials: 'same-origin',
-        headers: { 'content-type': 'application/json', accept: 'application/json' },
+        headers: {
+          'content-type': 'application/json',
+          accept: 'application/json',
+          ...(token ? { 'x-whale-translator-token': token } : {}),
+        },
         body: JSON.stringify(payload),
         signal,
       })

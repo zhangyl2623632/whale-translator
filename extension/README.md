@@ -1,39 +1,26 @@
-# 鲸译 · 浏览器扩展
+# Whale Translator · Browser Extension / 鲸译 · 浏览器扩展
 
-这是 `whale-translator` 的 companion 浏览器扩展（Chrome / Edge，Manifest V3）。它把同一套“选中文字 → 点翻译 → 只显示译文”的体验带到 DSH 之外的网页。
+[English manual](../README.md) | [中文手册](../README.zh.md)
 
-![鲸译浏览器扩展](preview.png)
+This folder is the unpacked Manifest V3 extension. The full product manual covers install, the Developer-mode requirement, permissions, privacy, troubleshooting, and the roadmap.
 
-## 安装（Edge / Chrome）
+![Whale Translator toolbar and card](preview.png)
 
-1. 打开 `edge://extensions`（Chrome 是 `chrome://extensions`）。
-2. 打开“开发人员模式 / Developer mode”。
-3. 点“加载解压缩的扩展 / Load unpacked”。
-4. 选择本目录 `plugins/whale-translator/extension`。
-5. 打开任意 `http://` / `https://` 网页，选中文字即可看到鲸译工具栏。
+## Quick install / 快速安装
 
-> 浏览器内部页面（`edge://`、`chrome://`、扩展商店）不允许注入，这是浏览器限制。
+1. Open `edge://extensions` (Chrome: `chrome://extensions`). / 打开扩展页。
+2. Enable **Developer mode**. / 打开 **开发者模式**。
+3. **Load unpacked** → this folder. / 点 **加载解压缩的扩展**，选择本目录。
+4. Select text on any `http(s)` page. / 在任意 `http(s)` 网页选中文字。
 
-## 它做什么
+> **Developer mode is required for an unpacked extension.** A `.crx` file alone does not remove this requirement; a store listing or an enterprise policy is needed for a Developer-mode-free install. See the [English manual](../README.md#install) or [中文手册](../README.zh.md#安装).
+>
+> **解压缩扩展必须开启开发者模式。** 只装 `.crx` 不能绕过；免开发者模式需要商店上架或企业策略。详见 [中文手册](../README.zh.md#安装)。
 
-- 选中文字后浮出鲸鱼工具栏；点击 **翻译** 才发送文字，不会自动请求。
-- 中英自动方向，保留原有换行；结果只显示译文。
-- 支持普通网页、`contenteditable` 富文本编辑器（Jira / Confluence / Notion 等）和 iframe 内的选择。
-- 工具栏使用独立注入的 `wt-` 前缀样式（`content.css`），避免被常见页面样式污染；页面只会在工具栏区域接收点击。
-- 翻译走扩展的 MV3 service worker（有 `edge.microsoft.com` host permission），不经过 DSH 进程，因此 DSH 关闭也能用。
-- 首次加载会预热 service worker / TLS；失败时快速提示并给重试按钮，不再等慢速备用接口。
+## Scope / 范围
 
-## 权限
+- **Supported:** Edge/Chrome `http(s)` pages, `contenteditable` editors, same-page iframes. / 支持网页、`contenteditable`、iframe。
+- **Not supported:** `edge://`, `chrome://`, the extension store, and other desktop apps. / 不支持浏览器内部页面、扩展商店和其他桌面应用。
+- **Outbound data:** selected text is sent only after **Translate** is clicked, to `edge.microsoft.com`. No history, no disk writes. / 只在点击翻译后发送选中文字到 `edge.microsoft.com`，不保存历史、不写磁盘。
 
-- `host_permissions: https://edge.microsoft.com/*`：只用于翻译请求。
-- `clipboardWrite`：复制译文/原文。
-- `content_scripts` 匹配 `<all_urls>`：在网页里显示工具栏。
-- 没有 `tabs`、`storage`、`webRequest` 权限。
-
-## 隐私
-
-选中文字只在点击 **翻译** 后发送给 Microsoft Translator（Bing）。扩展不保存历史、不写入磁盘；缓存只在 service worker 内存里。
-
-## 和 DSH 插件的关系
-
-DSH 插件运行在 DSH Web UI 的页面容器里，受浏览器同源策略限制，无法注入其他网站；本扩展是独立的浏览器宿主，因此能覆盖任意网页。两者共用同一套翻译思路，但代码分开打包，互不依赖。
+For the desktop-wide version (Word, WeChat, any Windows app), see the “Roadmap” section of the [manual](../README.md#roadmap).

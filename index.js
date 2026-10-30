@@ -6,6 +6,8 @@
  * small: it owns direction detection, length limits, upstream normalization,
  * newline preservation and a bounded cache.
  */
+import { randomBytes } from 'node:crypto'
+
 const ROUTE_PATH = '/api/dsh/whale-translator/translate'
 const BING_ENDPOINT = 'https://edge.microsoft.com/translate/translatetext'
 const MAX_TEXT = 12_000
@@ -13,6 +15,8 @@ const MAX_BODY = 96 * 1024
 const MAX_REQUEST_CHARS = 3_600
 const REQUEST_TIMEOUT_MS = 5_000
 const TOTAL_TIMEOUT_MS = 12_000
+const ROUTE_TOKEN = randomBytes(24).toString('base64url')
+const TOKEN_HEADER = 'x-whale-translator-token'
 const CHUNK_CONCURRENCY = 2
 const CACHE_LIMIT = 240
 const CACHE_CHARS_LIMIT = 2_000_000
@@ -506,7 +510,7 @@ export async function translateSelection(rawText, options = {}) {
   return result
 }
 
-function createHandler() {
+function createHandler(token = ROUTE_TOKEN) {
   return async (req, res) => {
     const pathname = (req.url || '').split('?')[0]
     if (pathname !== ROUTE_PATH) {
@@ -515,6 +519,10 @@ function createHandler() {
     }
     if (!sameOrigin(req)) {
       sendJson(res, 403, { ok: false, error: 'cross-site-request-rejected' })
+      return
+    }
+    if (req.headers[TOKEN_HEADER] !== token) {
+      sendJson(res, 403, { ok: false, error: 'unauthorized', message: '翻译鉴权失败，请刷新页面。' })
       return
     }
     if (req.method !== 'POST') {
@@ -585,11 +593,20 @@ export function apply(ctx) {
   const route = {
     kind: 'exact',
     path: ROUTE_PATH,
-    handler: createHandler(),
+    handler: createHandler(ROUTE_TOKEN),
   }
   if (typeof ctx.inject === 'function') {
     ctx.inject(['webServer'], (scope) => {
       scope.effect(() => scope.webServer.register(route), 'whale-translator: same-origin translation route')
+      if (typeof scope.webServer.tapIndex === 'function') {
+        scope.effect(
+          () => scope.webServer.tapIndex((html) => html.replace(
+            /<\/head>/i,
+            `<meta name="whale-translator-token" content="${ROUTE_TOKEN}"></head>`,
+          )),
+          'whale-translator: per-process page token',
+        )
+      }
     })
   }
 }
