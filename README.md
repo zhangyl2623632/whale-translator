@@ -12,7 +12,7 @@ A selection translator for **DeepSeek Harness**, plus a companion browser extens
 |---|---|---|---|
 | **DSH plugin** | Available, `1.0.0` | DeepSeek Harness Web UI | Plugin Manager / profile bundle |
 | **Browser extension** | Available, unpacked | Edge / Chrome, any `http(s)` page | Load unpacked (Developer mode) |
-| **Desktop all-app** | Planned | Word, WeChat, any Windows app | Separate desktop program, not in this package |
+| **Desktop all-app** | Windows spike available (mouse drag) | Word, WeChat, any Windows app | Standalone WinForms spike in `desktop/` |
 | **Store / CRX install** | Submitted to Edge Add-ons; in review | A Developer-mode-free install | Edge Add-ons listing or enterprise policy |
 | **DSH translation** | Available (`ctx.translator` + Bing fallback) | DSH backend | Uses the app's translator service when available |
 
@@ -69,6 +69,15 @@ Browser-internal pages (`edge://`, `chrome://`, the extension store) cannot be i
 - **DSH plugin:** reinstall the directory or update the linked package, then restart DSH.
 - **Extension:** `edge://extensions` → **Reload** after changing extension files; **Remove** to uninstall.
 - The unpacked extension points at the folder on disk. Keep `plugins/whale-translator/extension` in place; if you move it, reload the extension from the new path.
+
+### D. Desktop spike (Windows, proof of concept)
+
+A standalone WinForms spike lives in [`desktop/`](desktop/README.md). It uses a global mouse hook, UI Automation with a clipboard fallback, and a topmost overlay. It supports mouse-drag selections only; it has no installer or signing and is not part of the Edge add-on package.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\desktop\build.ps1
+powershell -ExecutionPolicy Bypass -File .\desktop\run.ps1
+```
 
 ## Use
 
@@ -162,14 +171,14 @@ The DSH plugin now prefers `ctx.translator` when the Host exposes an eligible an
 
 ### 1. Desktop all-app version
 
-A separate desktop program, not part of this package. Target behavior, similar to Doubao’s desktop selection tool:
+A Windows spike exists in [`desktop/`](desktop/README.md): global mouse hook, UI Automation with clipboard fallback, a topmost overlay, and Bing translation. Target behavior, similar to Doubao’s desktop selection tool:
 
 - Windows global mouse hook (and macOS event tap on macOS).
 - Read the selection with UI Automation or accessibility APIs; fall back to clipboard copy/restore.
 - Show a topmost, click-through-where-needed overlay near the cursor.
 - Call the same translation service; keep the “only on click” privacy rule.
 
-This requires a native/desktop host, code signing, and installer work. The current browser extension cannot provide it.
+Still needed for production: keyboard-triggered selection, a target-language picker, installer, code signing, auto-update, elevated-app handling, and macOS.
 
 ### 2. Store / CRX packaging
 
@@ -190,6 +199,7 @@ This requires a native/desktop host, code signing, and installer work. The curre
 | `extension/` | Standalone MV3 extension (service worker, content script, CSS, icons) |
 | `test/` | Node tests for the host, route, client contract, and extension core |
 | `store/` | Edge Add-ons submission kit: listing copy, privacy policy, icons, screenshots, package |
+| `desktop/` | Windows all-app spike: mouse hook, UIA/clipboard selection, topmost overlay |
 | `locale/` | DSH plugin metadata |
 | `THIRD_PARTY_NOTICES.md` | Lucide whale attribution |
 

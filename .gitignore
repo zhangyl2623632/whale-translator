@@ -5,4 +5,5 @@ Thumbs.db
 *.tmp
 store/dist/*.zip
 store/assets/source-panel.png
+desktop/bin/
 

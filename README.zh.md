@@ -12,7 +12,7 @@
 |---|---|---|---|
 | **DSH 插件** | 可用，`1.0.0` | DeepSeek Harness Web UI | 插件管理器 / profile bundle |
 | **浏览器扩展** | 可用，解压缩加载 | Edge / Chrome 的 `http(s)` 网页 | Load unpacked（需要开发者模式） |
-| **全应用桌面版** | 规划中 | Word、微信、Windows 任意应用 | 独立桌面程序，不在本包内 |
+| **全应用桌面版** | Windows spike 可用（鼠标拖选） | Word、微信、Windows 任意应用 | 独立 WinForms spike，在 `desktop/` |
 | **商店 / CRX 安装** | 已提交 Edge 加载项，审核中 | 免开发者模式安装 | Edge 加载项上架或企业策略 |
 | **DSH 翻译** | 可用（`ctx.translator` + Bing fallback） | DSH 后端 | 优先使用应用翻译服务 |
 
@@ -69,6 +69,15 @@
 - **DSH 插件：** 重新安装目录或更新 link 包，然后重启 DSH。
 - **浏览器扩展：** 修改扩展文件后，在 `edge://extensions` 点 **重新加载 / Reload**；点 **删除 / Remove** 卸载。
 - 解压缩扩展指向磁盘目录。请保留 `plugins/whale-translator/extension` 的位置；移动后需要从新路径重新加载。
+
+### D. 桌面 spike（Windows，概念验证）
+
+独立 WinForms spike 在 [`desktop/`](desktop/README.md)，使用全局鼠标钩子、UI Automation + 剪贴板兜底、置顶浮窗。只支持鼠标拖选，没有安装器/签名，也不在 Edge 加载项包内。
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\desktop\build.ps1
+powershell -ExecutionPolicy Bypass -File .\desktop\run.ps1
+```
 
 ## 使用
 
@@ -162,14 +171,14 @@ DSH 插件现在优先使用 `ctx.translator`（宿主有可用的匿名 provide
 
 ### 1. 全应用桌面版
 
-独立桌面程序，不在本包内。目标行为类似豆包的桌面划词：
+Windows spike 已在 [`desktop/`](desktop/README.md)：全局鼠标钩子、UI Automation + 剪贴板兜底、置顶浮窗、Bing 翻译。目标行为类似豆包的桌面划词：
 
 - Windows 全局鼠标钩子（macOS 用 event tap）。
 - 通过 UI Automation / 无障碍 API 读取选区；失败时用剪贴板复制/恢复兜底。
 - 在光标附近显示置顶浮窗；需要时点击穿透。
 - 复用同一套翻译服务；保持“点击后才发送”的隐私规则。
 
-这需要原生/桌面宿主、代码签名和安装器；当前浏览器扩展无法提供。
+正式产品还缺：键盘划词、目标语言选择、安装器、代码签名、自动更新、高权限（elevated）应用处理、macOS。
 
 ### 2. 商店 / CRX 打包
 
@@ -190,6 +199,7 @@ DSH 插件现在优先使用 `ctx.translator`（宿主有可用的匿名 provide
 | `extension/` | 独立 MV3 扩展（service worker、content script、CSS、图标） |
 | `test/` | 宿主、路由、客户端契约、扩展 core 的 Node 测试 |
 | `store/` | Edge 加载项上架材料：listing、隐私政策、图标、截图、安装包 |
+| `desktop/` | Windows 全应用 spike：鼠标钩子、UIA/剪贴板选区、置顶浮窗 |
 | `locale/` | DSH 插件元数据 |
 | `THIRD_PARTY_NOTICES.md` | Lucide 鲸鱼图标归属 |
 
