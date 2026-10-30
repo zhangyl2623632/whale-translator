@@ -13,7 +13,7 @@
 | **DSH 插件** | 可用，`1.0.0` | DeepSeek Harness Web UI | 插件管理器 / profile bundle |
 | **浏览器扩展** | 可用，解压缩加载 | Edge / Chrome 的 `http(s)` 网页 | Load unpacked（需要开发者模式） |
 | **全应用桌面版** | 规划中 | Word、微信、Windows 任意应用 | 独立桌面程序，不在本包内 |
-| **商店 / CRX 安装** | 规划中 | 免开发者模式安装 | 商店上架或企业策略 |
+| **商店 / CRX 安装** | 商店材料已备好，尚未提交 | 免开发者模式安装 | Edge 加载项上架或企业策略 |
 | **DSH 路由鉴权** | 可用（按进程页面 token） | DSH 后端加固 | `ctx.translator` 仍在规划 |
 
 两种已交付形态彼此独立：DSH 插件在 Harness 内运行，浏览器扩展在 Edge/Chrome 内运行；可以只用其中一个。
@@ -56,8 +56,8 @@
 
 | 方案 | 需要什么 | 说明 |
 |---|---|---|
-| Edge 加载项 / Chrome 网上应用店 | 开发者账号、审核、签名 | 最终用户体验最好；本包尚未上架 |
-| 企业策略 | 管理员权限、可访问的签名 CRX + update XML | 适合受管机群，不适合个人浏览器 |
+| Edge 加载项 | 个人或公司账号（Edge 不收注册费）、审核 | 商店材料已备好，尚未提交；给其他人免开发者模式安装的正规路径 |
+| 企业策略 | 管理员权限、可访问的签名 CRX + update XML | 个人 PC 技术上能设，但面向受管机群；一个人用不值得 |
 | 只用 DSH 插件 | 运行 DSH | 只覆盖 Harness 页面，不需要开发者模式 |
 | `--load-extension` 快捷方式 | 一个带启动参数的浏览器快捷方式 | 仅限高级/测试用途；不是正常安装，浏览器已运行时可能被忽略 |
 
@@ -193,6 +193,7 @@ DSH 路由现在要求**按进程生成的页面 token**，并保留 same-origin
 | `index.js` | DSH 宿主路由、Bing 请求、分块、缓存 |
 | `extension/` | 独立 MV3 扩展（service worker、content script、CSS、图标） |
 | `test/` | 宿主、路由、客户端契约、扩展 core 的 Node 测试 |
+| `store/` | Edge 加载项上架材料：listing、隐私政策、图标、截图、安装包 |
 | `locale/` | DSH 插件元数据 |
 | `THIRD_PARTY_NOTICES.md` | Lucide 鲸鱼图标归属 |
 
@@ -210,4 +211,4 @@ npm test
 
 鲸鱼图标基于 Lucide `whale` 线稿再创作（ISC）。见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
 
-本包尚未声明项目级 License。作为产品再分发前请补充 License。
+本项目使用 MIT License。见 [LICENSE](LICENSE)。

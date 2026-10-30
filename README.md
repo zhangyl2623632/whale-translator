@@ -13,7 +13,7 @@ A selection translator for **DeepSeek Harness**, plus a companion browser extens
 | **DSH plugin** | Available, `1.0.0` | DeepSeek Harness Web UI | Plugin Manager / profile bundle |
 | **Browser extension** | Available, unpacked | Edge / Chrome, any `http(s)` page | Load unpacked (Developer mode) |
 | **Desktop all-app** | Planned | Word, WeChat, any Windows app | Separate desktop program, not in this package |
-| **Store / CRX install** | Planned | A Developer-mode-free install | Store listing or enterprise policy |
+| **Store / CRX install** | Store kit ready; not yet submitted | A Developer-mode-free install | Edge Add-ons listing or enterprise policy |
 | **DSH route auth** | Available (per-process page token) | DSH backend hardening | `ctx.translator` still planned |
 
 The two available surfaces are independent: the DSH plugin runs inside Harness, the browser extension runs in Edge/Chrome, and either can be used without the other.
@@ -56,8 +56,8 @@ No npm dependencies are added. The package name is `@local/whale-translator`.
 
 | Option | What it needs | Notes |
 |---|---|---|
-| Edge Add-ons / Chrome Web Store | Developer account, review, signature | Best end-user experience; not set up for this package yet |
-| Enterprise policy | Admin rights, hosted signed CRX + update XML | Suitable for a managed fleet; not for a single personal browser |
+| Edge Add-ons | Individual or company account, no Edge registration fee, review | Store kit is prepared; not submitted yet. The clean Developer-mode-free path for other people. |
+| Enterprise policy | Admin rights, hosted signed CRX + update XML | Technical on a personal PC, but intended for managed fleets; not worth it for one person. |
 | DSH plugin only | DSH running | Covers Harness pages only, no Developer mode |
 | Portable launch with `--load-extension` | A shortcut that starts the browser with the flag | Advanced/testing only; not a normal install, and ignored if the browser is already running |
 
@@ -193,6 +193,7 @@ The per-process route token is implemented. The remaining step is to prefer DSHâ
 | `index.js` | DSH host route, Bing request, chunking, cache |
 | `extension/` | Standalone MV3 extension (service worker, content script, CSS, icons) |
 | `test/` | Node tests for the host, route, client contract, and extension core |
+| `store/` | Edge Add-ons submission kit: listing copy, privacy policy, icons, screenshots, package |
 | `locale/` | DSH plugin metadata |
 | `THIRD_PARTY_NOTICES.md` | Lucide whale attribution |
 
@@ -210,4 +211,4 @@ The tests mock `fetch`; they do not call the network. There are no npm runtime d
 
 The whale glyph is an original composition built on the Lucide `whale` outline (ISC). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-No project license is declared in this package. Add a license before redistributing it as a product.
+This project is released under the MIT License. See [LICENSE](LICENSE).

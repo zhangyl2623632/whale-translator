@@ -4,6 +4,12 @@
   "private": true,
   "type": "module",
   "description": "Whale-mode selection translator for DeepSeek Harness: select text, pick 翻译, and get an English↔Chinese translation with the original line breaks intact.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhangyl2623632/whale-translator.git"
+  },
+  "homepage": "https://github.com/zhangyl2623632/whale-translator#readme",
   "scripts": {
     "test": "node --test test"
   },
@@ -21,6 +27,8 @@
     "icon.svg",
     "README.md",
     "README.zh.md",
+    "LICENSE",
+    "PRIVACY.md",
     "THIRD_PARTY_NOTICES.md",
     "extension/**",
     "test/*.test.js"

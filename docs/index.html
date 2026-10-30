@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>鲸译 · 划词翻译</title>
+  <style>
+    :root { color-scheme: light; --ink: #102733; --muted: #55707d; --cyan: #0a7f8c; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.7 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; color: var(--ink); background: radial-gradient(120% 80% at 100% 0%, #dff8fa 0%, #f6fbfc 55%); }
+    main { max-width: 760px; margin: 0 auto; padding: 64px 24px; }
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .brand img { width: 64px; height: 64px; border-radius: 18px; box-shadow: 0 8px 24px rgba(10, 64, 80, .18); }
+    h1 { margin: 0; font-size: 34px; letter-spacing: .02em; }
+    .sub { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+    p { color: #2c4a55; }
+    .card { margin-top: 28px; padding: 22px; border: 1px solid #d8e9ed; border-radius: 14px; background: rgba(255,255,255,.8); }
+    .card h2 { margin: 0 0 8px; font-size: 18px; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .links a { display: inline-block; padding: 10px 14px; border-radius: 9px; border: 1px solid #cce3e8; background: #fff; color: var(--cyan); text-decoration: none; font-size: 14px; }
+    .links a.primary { background: #0b2b3b; border-color: #0b2b3b; color: #e9fbfc; }
+    footer { margin-top: 40px; color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="brand">
+    <img src="../extension/icons/128.png" alt="">
+    <div>
+      <h1>鲸译 · 划词翻译</h1>
+      <p class="sub">Whale Translator · 选中文字，只显示译文</p>
+    </div>
+  </div>
+
+  <p>一个只在你想翻译时才出现的划词翻译工具。中英互译，保留换行，只在点击后发送选中文字。支持 Edge / Chrome 网页，以及 DeepSeek Harness。</p>
+
+  <div class="card">
+    <h2>隐私优先</h2>
+    <p>点击“翻译”之前不发送任何内容；不保存翻译历史，不写磁盘；不申请 tabs、storage、webRequest 权限。</p>
+  </div>
+
+  <div class="links">
+    <a class="primary" href="https://github.com/zhangyl2623632/whale-translator">GitHub 仓库</a>
+    <a href="./privacy.html">隐私政策 / Privacy</a>
+    <a href="https://github.com/zhangyl2623632/whale-translator/issues">问题反馈</a>
+  </div>
+
+  <footer>Edge 加载项正在准备上架 · 当前可通过 load unpacked 使用</footer>
+</main>
+</body>
+</html>

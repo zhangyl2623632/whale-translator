@@ -3,3 +3,6 @@ node_modules/
 Thumbs.db
 *.log
 *.tmp
+store/dist/*.zip
+store/assets/source-panel.png
+

@@ -3,6 +3,7 @@
   "name": "鲸译 · 划词翻译",
   "version": "1.0.0",
   "description": "在任意网页选中文字，点「翻译」在中英之间互译；保留原有换行，只在点击后发送文字。",
+  "homepage_url": "https://github.com/zhangyl2623632/whale-translator",
   "minimum_chrome_version": "102",
   "permissions": [
     "clipboardWrite"
@@ -30,18 +31,9 @@
       "match_about_blank": true
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "content.css"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    }
-  ],
   "action": {
     "default_title": "鲸译 · 划词翻译",
+    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/16.png",
       "32": "icons/32.png",

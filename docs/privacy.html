@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Whale Translator — Privacy Policy</title>
+  <style>
+    :root { color-scheme: light; --ink: #102733; --muted: #55707d; --line: #dbe9ed; --cyan: #0a7f8c; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.7 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif; color: var(--ink); background: #f6fbfc; }
+    main { max-width: 820px; margin: 0 auto; padding: 48px 24px 72px; }
+    header { display: flex; align-items: center; gap: 14px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    header img { width: 52px; height: 52px; border-radius: 14px; }
+    h1 { margin: 0; font-size: 30px; line-height: 1.2; }
+    header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    h2 { margin: 34px 0 10px; font-size: 20px; }
+    p, li { color: #294651; }
+    ul { padding-left: 22px; }
+    a { color: var(--cyan); }
+    .meta { margin-top: 18px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font-size: 14px; color: var(--muted); }
+    .zh { margin-top: 54px; padding-top: 30px; border-top: 1px solid var(--line); }
+    code { background: #eaf4f6; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+    footer { margin-top: 46px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="../extension/icons/128.png" alt="">
+    <div>
+      <h1>Whale Translator</h1>
+      <p>鲸译 · 划词翻译 — Privacy Policy / 隐私政策</p>
+    </div>
+  </header>
+
+  <p class="meta"><strong>Effective date / 生效日期:</strong> 2026-10-30</p>
+
+  <p>Whale Translator is a selection translator for Microsoft Edge and Chrome, and for DeepSeek Harness. This policy explains what the browser extension and the DSH plugin send, when they send it, and what they keep.</p>
+
+  <h2>1. What is sent</h2>
+  <p>When you select text and click <strong>翻译 / Translate</strong>, the extension or DSH plugin sends the selected text and the requested source/target language settings to Microsoft's Edge translator endpoint:</p>
+  <ul>
+    <li><code>https://edge.microsoft.com/translate/translatetext</code> (Microsoft Translator / Bing)</li>
+    <li>Microsoft privacy statement: <a href="https://privacy.microsoft.com/privacystatement" rel="noreferrer">privacy.microsoft.com/privacystatement</a></li>
+  </ul>
+  <p><strong>Nothing is sent before you click Translate.</strong> Selecting text alone does not transmit it. The extension does not send the page URL, page title, browsing history, cookies, account identifiers, or device identifiers.</p>
+
+  <h2>2. What is not collected</h2>
+  <p>The extension and plugin do not collect, sell, rent, or share browsing history, page URLs, names, email addresses, accounts, location, health/financial/authentication information, analytics, advertising IDs, or telemetry. There are no analytics SDKs, ads, trackers, or remote scripts.</p>
+
+  <h2>3. Local storage and retention</h2>
+  <p>The browser extension does not keep a translation history and does not write translations to disk. Successful results may be cached in the MV3 service worker's memory to avoid duplicate requests; the cache is bounded, lives only in memory, and disappears when the worker stops or the browser closes. The DSH plugin keeps a bounded in-memory cache in the host process and writes no translation history to disk.</p>
+  <p>Clipboard access is write-only and occurs only when you click a copy button. The extension does not read your clipboard.</p>
+
+  <h2>4. Permissions</h2>
+  <ul>
+    <li><code>clipboardWrite</code> — copy original/translation when you click a copy button.</li>
+    <li><code>https://edge.microsoft.com/*</code> — send selected text to Microsoft's translator endpoint.</li>
+    <li>Content script on <code>http(s)</code> pages / all frames — show the selection toolbar on the page and inside same-page iframes.</li>
+    <li><code>action</code> popup — show usage help; no data collection.</li>
+  </ul>
+  <p>The extension does not request <code>tabs</code>, <code>storage</code>, <code>webRequest</code>, <code>cookies</code>, or <code>history</code>.</p>
+
+  <h2>5. Third parties</h2>
+  <p>The only translation processor is Microsoft (Edge translator / Bing). Microsoft's privacy statement applies to the text sent to its endpoint. The extension does not use any other third-party service.</p>
+
+  <h2>6. Children</h2>
+  <p>The extension is not directed to children under 13 and does not knowingly collect personal information from children.</p>
+
+  <h2>7. Changes</h2>
+  <p>If this policy changes, the effective date above will be updated and the new version will be published at the same URL. Material changes will be reflected in the store listing or release notes.</p>
+
+  <h2>8. Contact</h2>
+  <p>Questions or requests: <a href="https://github.com/zhangyl2623632/whale-translator/issues" rel="noreferrer">GitHub Issues</a>.</p>
+
+  <section class="zh" lang="zh-CN">
+    <h1>鲸译 · 划词翻译 — 隐私政策</h1>
+    <p class="meta"><strong>生效日期：</strong>2026-10-30</p>
+    <p>鲸译是用于 Microsoft Edge、Chrome 和 DeepSeek Harness 的划词翻译工具。本政策说明浏览器扩展与 DSH 插件发送什么、何时发送、保留什么。</p>
+
+    <h2>1. 发送什么</h2>
+    <p>当你选中文字并点击 <strong>翻译</strong> 时，扩展或 DSH 插件会把选中的文字和目标语言设置发送到 Microsoft Edge 翻译端点：</p>
+    <ul>
+      <li><code>https://edge.microsoft.com/translate/translatetext</code>（Microsoft Translator / Bing）</li>
+      <li>Microsoft 隐私声明：<a href="https://privacy.microsoft.com/privacystatement" rel="noreferrer">privacy.microsoft.com/privacystatement</a></li>
+    </ul>
+    <p><strong>点击翻译之前不会发送任何内容。</strong>仅选中文字不会传输。扩展不会发送页面 URL、页面标题、浏览历史、Cookie、账号标识或设备标识。</p>
+
+    <h2>2. 不收集什么</h2>
+    <p>扩展和插件不收集、出售、出租或共享浏览历史、页面 URL、姓名、邮箱、账号、位置、健康/财务/认证信息、分析数据、广告 ID 或遥测。没有分析 SDK、广告、跟踪器或远程脚本。</p>
+
+    <h2>3. 本地存储与保留</h2>
+    <p>浏览器扩展不保存翻译历史，不把译文写入磁盘。成功结果可能缓存在 MV3 service worker 的内存中，避免重复请求；缓存有上限，只存在内存中，service worker 停止或浏览器关闭后消失。DSH 插件在宿主进程内保留有界内存缓存，不向磁盘写翻译历史。</p>
+    <p>剪贴板为只写，且仅在你点击复制按钮时使用；扩展不读取剪贴板。</p>
+
+    <h2>4. 权限</h2>
+    <ul>
+      <li><code>clipboardWrite</code> — 点击复制按钮时写入原文/译文。</li>
+      <li><code>https://edge.microsoft.com/*</code> — 把选中文字发送到 Microsoft 翻译端点。</li>
+      <li><code>http(s)</code> 页面 / 所有 frame 的 content script — 在页面和同页 iframe 中显示划词工具栏。</li>
+      <li><code>action</code> popup — 显示使用帮助；不收集数据。</li>
+    </ul>
+    <p>扩展不申请 <code>tabs</code>、<code>storage</code>、<code>webRequest</code>、<code>cookies</code> 或 <code>history</code>。</p>
+
+    <h2>5. 第三方</h2>
+    <p>唯一的翻译处理方是 Microsoft（Edge 翻译 / Bing）。发送到其端点的文字适用 Microsoft 隐私声明。扩展不使用其他第三方服务。</p>
+
+    <h2>6. 儿童</h2>
+    <p>本扩展不面向 13 岁以下儿童，也不会有意收集儿童个人信息。</p>
+
+    <h2>7. 变更</h2>
+    <p>如果本政策变化，会更新上方生效日期，并在同一 URL 发布新版本。重大变化会在商店 listing 或 release notes 中说明。</p>
+
+    <h2>8. 联系</h2>
+    <p>问题或请求：<a href="https://github.com/zhangyl2623632/whale-translator/issues" rel="noreferrer">GitHub Issues</a>。</p>
+  </section>
+
+  <footer>
+    Whale Translator · <a href="./index.html">Home</a> · <a href="https://github.com/zhangyl2623632/whale-translator">GitHub</a>
+  </footer>
+</main>
+</body>
+</html>

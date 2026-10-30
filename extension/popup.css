@@ -1,0 +1,123 @@
+:root {
+  color-scheme: light;
+  font-family: "Microsoft YaHei", "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: #0c2230;
+  background: #f5fafb;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  width: 320px;
+  background: #f5fafb;
+}
+
+.wtp {
+  padding: 18px 18px 12px;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(41, 203, 210, 0.14), transparent 60%),
+    linear-gradient(180deg, #f7fcfd 0%, #eef7f9 100%);
+}
+
+.wtp-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #dbe9ed;
+}
+
+.wtp-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  box-shadow: 0 2px 8px rgba(9, 42, 58, 0.18);
+}
+
+.wtp-head h1 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+}
+
+.wtp-head p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: #527080;
+  letter-spacing: 0.02em;
+}
+
+.wtp-steps {
+  list-style: none;
+  margin: 14px 0 12px;
+  padding: 0;
+  counter-reset: step;
+}
+
+.wtp-steps li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0 8px 34px;
+  counter-increment: step;
+}
+
+.wtp-steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #0b2b3b;
+  color: #5ee6ea;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.wtp-steps b {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.wtp-steps span {
+  font-size: 11px;
+  color: #5c7784;
+}
+
+.wtp-privacy {
+  margin: 0;
+  padding: 10px 11px;
+  border: 1px solid #d7e8ec;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 11px;
+  line-height: 1.55;
+  color: #45616e;
+}
+
+.wtp-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-size: 10px;
+  color: #5b7c88;
+  letter-spacing: 0.06em;
+}
+
+.wtp-foot a {
+  color: #0a7f8c;
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.wtp-foot a:hover { text-decoration: underline; }

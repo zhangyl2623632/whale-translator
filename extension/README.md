@@ -24,5 +24,8 @@ This folder is the unpacked Manifest V3 extension. The full product manual cover
 - **Supported:** Edge/Chrome `http(s)` pages, `contenteditable` editors, same-page iframes. / 支持网页、`contenteditable`、iframe。
 - **Not supported:** `edge://`, `chrome://`, the extension store, and other desktop apps. / 不支持浏览器内部页面、扩展商店和其他桌面应用。
 - **Outbound data:** selected text is sent only after **Translate** is clicked, to `edge.microsoft.com`. No history, no disk writes. / 只在点击翻译后发送选中文字到 `edge.microsoft.com`，不保存历史、不写磁盘。
+- **Toolbar icon:** opens a small usage popup; it is not the translation trigger. / 工具栏图标打开使用说明，不是翻译触发按钮。
+
+The Edge Add-ons submission kit (listing, privacy policy, screenshots, ZIP builder) is in [`../store`](../store/README.md). It is prepared but not yet submitted. / Edge 加载项上架材料在 [`../store`](../store/README.md)，已备好但尚未提交。
 
 For the desktop-wide version (Word, WeChat, any Windows app), see the “Roadmap” section of the [manual](../README.md#roadmap).
