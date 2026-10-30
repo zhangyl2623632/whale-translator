@@ -423,6 +423,32 @@ function lookup(key) {
   return value
 }
 
+async function translateWithTranslator(text, source, target, signal, translator) {
+  if (!translator || typeof translator.availableProviders !== 'function' || typeof translator.resolve !== 'function' || typeof translator.translate !== 'function') {
+    return null
+  }
+  const providers = await translator.availableProviders(signal)
+  if (!Array.isArray(providers)) return null
+  const anonymous = providers.filter((provider) => provider === 'google' || provider === 'bing')
+  for (const provider of anonymous) {
+    try {
+      const spec = translator.resolve({
+        text,
+        sourceLanguage: bingLanguage(source),
+        targetLanguage: bingLanguage(target),
+        provider,
+      })
+      const translated = await translator.translate(spec, signal)
+      if (typeof translated === 'string' && translated.trim() !== '') {
+        return { text: normalizeNewlines(translated), provider }
+      }
+    } catch (error) {
+      if (signal && signal.aborted) throw error
+    }
+  }
+  return null
+}
+
 /**
  * Translate one selection while preserving its exact newline skeleton.
  * Exported for a small Node-level contract test.
@@ -449,6 +475,32 @@ export async function translateSelection(rawText, options = {}) {
   const cacheKey = `${source}>${target}:${text}`
   const cached = lookup(cacheKey)
   if (cached) return cached
+
+  let serviceResult = null
+  try {
+    serviceResult = await translateWithTranslator(text, source, target, options.signal, options.translator)
+  } catch (error) {
+    if (options.signal && options.signal.aborted) throw options.signal.reason || error
+    serviceResult = null
+  }
+  if (serviceResult) {
+    const sourceShape = newlineShape(text)
+    if (sourceShape === newlineShape(serviceResult.text)) {
+      const translation = restoreLineEdges(text, serviceResult.text)
+      if (translation.trim() !== '') {
+        const result = {
+          ok: true,
+          translation,
+          source,
+          target,
+          provider: serviceResult.provider,
+          chars: text.length,
+        }
+        remember(cacheKey, result)
+        return result
+      }
+    }
+  }
 
   let rendered = []
   let detected = null
@@ -510,7 +562,7 @@ export async function translateSelection(rawText, options = {}) {
   return result
 }
 
-function createHandler(token = ROUTE_TOKEN) {
+function createHandler(token = ROUTE_TOKEN, getTranslator = () => undefined) {
   return async (req, res) => {
     const pathname = (req.url || '').split('?')[0]
     if (pathname !== ROUTE_PATH) {
@@ -572,6 +624,7 @@ function createHandler(token = ROUTE_TOKEN) {
         source: body.source,
         target: body.target,
         signal: controller.signal,
+        translator: getTranslator(),
       })
       sendJson(res, 200, result)
     } catch (error) {
@@ -594,10 +647,17 @@ function createHandler(token = ROUTE_TOKEN) {
 }
 
 export function apply(ctx) {
+  const getTranslator = () => {
+    try {
+      return typeof ctx.get === 'function' ? ctx.get('translator') : undefined
+    } catch {
+      return undefined
+    }
+  }
   const route = {
     kind: 'exact',
     path: ROUTE_PATH,
-    handler: createHandler(ROUTE_TOKEN),
+    handler: createHandler(ROUTE_TOKEN, getTranslator),
   }
   if (typeof ctx.inject === 'function') {
     ctx.inject(['webServer'], (scope) => {

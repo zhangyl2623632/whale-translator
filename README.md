@@ -14,13 +14,14 @@ A selection translator for **DeepSeek Harness**, plus a companion browser extens
 | **Browser extension** | Available, unpacked | Edge / Chrome, any `http(s)` page | Load unpacked (Developer mode) |
 | **Desktop all-app** | Planned | Word, WeChat, any Windows app | Separate desktop program, not in this package |
 | **Store / CRX install** | Store kit ready; not yet submitted | A Developer-mode-free install | Edge Add-ons listing or enterprise policy |
-| **DSH route auth** | Available (per-process page token) | DSH backend hardening | `ctx.translator` still planned |
+| **DSH translation** | Available (`ctx.translator` + Bing fallback) | DSH backend | Uses the app's translator service when available |
 
 The two available surfaces are independent: the DSH plugin runs inside Harness, the browser extension runs in Edge/Chrome, and either can be used without the other.
 
 ## Features
 
 - **Selection first, translation second.** A whale toolbar appears above the selection. Translation starts only after **Translate** is clicked.
+- **DSH-native translation.** Inside DSH, the plugin prefers the Host's `ctx.translator` service and falls back to the direct Bing path if no provider is available.
 - **Chinese ↔ English.** The source language is detected locally; the target can be switched in the card.
 - **Line breaks are preserved.** The newline skeleton is verified after the provider responds; if it changes, the text is retranslated line by line and the original leading/trailing whitespace is restored.
 - **Only the translation.** The result card does not repeat the source text or add a “Translation:” prefix.
@@ -132,12 +133,7 @@ The DSH route requires a **per-process page token** in addition to the same-orig
 
 The route does not store or log selected text. It is still not a replacement for DSH’s own authentication if the Web server is exposed beyond localhost; keep the server on localhost or behind your normal access controls.
 
-Planned:
-
-- Integrate DSH’s `ctx.translator` service so the plugin follows the app’s translation provider and credential settings.
-- Keep the current fast Bing path as a fallback while the integration is validated.
-
-These are the remaining medium-risk items from the code review.
+The DSH plugin now prefers `ctx.translator` when the Host exposes an eligible anonymous provider and falls back to the direct Bing path. Paid/session-aware providers are left to future DSH configuration.
 
 ## Troubleshooting
 
@@ -181,9 +177,9 @@ This requires a native/desktop host, code signing, and installer work. The curre
 - For managed machines, host a signed CRX + update manifest and use `ExtensionSettings` / `ExtensionInstallForcelist`.
 - A `.crx` alone is not a bypass for Developer mode. Packaging also requires protecting the signing key; it must never be committed to the repository.
 
-### 3. DSH `ctx.translator`
+### 3. DSH translator follow-up
 
-The per-process route token is implemented. The remaining step is to prefer DSH’s `translator` service for provider/credential consistency, while keeping the same-origin/body/content-type/token checks as defense in depth.
+`ctx.translator` is integrated with a direct Bing fallback, and the route keeps its same-origin/body/content-type/token checks. Future work can expose paid/session-aware providers or a provider picker if DSH adds those settings.
 
 ## Development
 

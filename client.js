@@ -682,7 +682,7 @@ body[data-ds-dark-theme] .wt-skeleton i{background-image:linear-gradient(90deg,r
               result: data.translation,
               detected: data.source === 'zh' || data.source === 'en' ? data.source : previous.detected,
               target: data.target === 'zh' || data.target === 'en' ? data.target : previous.target,
-              provider: data.provider === 'mymemory' ? 'mymemory' : 'bing',
+              provider: data.provider === 'google' ? 'google' : data.provider === 'mymemory' ? 'mymemory' : 'bing',
               panel: panelGeometry(previous.anchor),
             } : previous)
           })
@@ -1088,7 +1088,9 @@ body[data-ds-dark-theme] .wt-skeleton i{background-image:linear-gradient(90deg,r
                 ? '正在翻译'
                 : view.status === 'error'
                   ? '翻译未完成'
-                  : 'Bing · 翻译',
+                  : view.provider === 'google'
+                    ? 'Google · 翻译'
+                    : 'Bing · 翻译',
           ),
           h('div', { className: 'wt-foot-actions' },
             isPanel && !isBusy && view.result ? h('button', {

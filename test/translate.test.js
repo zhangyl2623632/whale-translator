@@ -31,6 +31,43 @@ test('detectLanguage separates the advertised pair', () => {
   assert.equal(detectLanguage('这是 LOOP Flex 贷款'), 'zh')
 })
 
+test('translateSelection prefers the DSH translator service', async () => {
+  let bingCalls = 0
+  installFetch(async () => {
+    bingCalls += 1
+    return bingResponse(['不应调用 Bing'])
+  })
+  const requests = []
+  const translator = {
+    availableProviders: async () => ['google'],
+    resolve: (request) => {
+      requests.push(request)
+      return { ...request, provider: 'google' }
+    },
+    translate: async () => '你好',
+  }
+
+  const result = await translateSelection('Hello', { source: 'en', target: 'zh', translator })
+  assert.equal(result.provider, 'google')
+  assert.equal(result.translation, '你好')
+  assert.equal(bingCalls, 0)
+  assert.equal(requests[0].sourceLanguage, 'en')
+  assert.equal(requests[0].targetLanguage, 'zh-Hans')
+})
+
+test('translateSelection falls back to Bing when the DSH translator fails', async () => {
+  installFetch(async () => bingResponse(['你好']))
+  const translator = {
+    availableProviders: async () => ['google'],
+    resolve: (request) => ({ ...request, provider: 'google' }),
+    translate: async () => { throw new Error('provider unavailable') },
+  }
+
+  const result = await translateSelection('Hello fallback', { source: 'en', target: 'zh', translator })
+  assert.equal(result.provider, 'bing')
+  assert.equal(result.translation, '你好')
+})
+
 test('translateSelection keeps the newline skeleton and trims provider edges', async () => {
   installFetch(async () => bingResponse(['hola\nmundo'], 'zh'))
   const result = await translateSelection('  你好\n世界  ', { source: 'auto', target: 'en' })

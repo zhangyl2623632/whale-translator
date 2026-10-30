@@ -14,13 +14,14 @@
 | **浏览器扩展** | 可用，解压缩加载 | Edge / Chrome 的 `http(s)` 网页 | Load unpacked（需要开发者模式） |
 | **全应用桌面版** | 规划中 | Word、微信、Windows 任意应用 | 独立桌面程序，不在本包内 |
 | **商店 / CRX 安装** | 商店材料已备好，尚未提交 | 免开发者模式安装 | Edge 加载项上架或企业策略 |
-| **DSH 路由鉴权** | 可用（按进程页面 token） | DSH 后端加固 | `ctx.translator` 仍在规划 |
+| **DSH 翻译** | 可用（`ctx.translator` + Bing fallback） | DSH 后端 | 优先使用应用翻译服务 |
 
 两种已交付形态彼此独立：DSH 插件在 Harness 内运行，浏览器扩展在 Edge/Chrome 内运行；可以只用其中一个。
 
 ## 功能
 
 - **先选区，后翻译。** 选中文字后浮出鲸鱼工具栏；只有点击 **翻译** 才开始请求。
+- **DSH 原生翻译。** 在 DSH 内优先使用宿主的 `ctx.translator` 服务；没有可用 provider 时回退到 Bing 直连。
 - **中英互译。** 在本地检测原文语言；卡片内可切换目标语言。
 - **保留换行。** 翻译后会校验换行结构；若结构变化，则逐行重译，并还原每行原有的前后空白。
 - **只显示译文。** 卡片不重复原文，不加 “Translation:” 前缀。
@@ -132,12 +133,7 @@ DSH 路由现在要求**按进程生成的页面 token**，并保留 same-origin
 
 路由不存储、不记录选中文字。如果 DSH Web 服务被暴露到 localhost 之外，仍应依赖 DSH 自身的鉴权；请保持 localhost 或置于常规访问控制之后。
 
-计划中：
-
-- 接入 DSH 的 `ctx.translator`，让插件遵循应用的翻译 provider / 凭据设置。
-- 在接入验证期间保留当前快速 Bing 路径作为 fallback。
-
-这些是代码 review 中剩余的中危项。
+DSH 插件现在优先使用 `ctx.translator`（宿主有可用的匿名 provider 时），并保留 Bing 直连作为 fallback。需要付费/会话的 provider 留给后续 DSH 配置。
 
 ## 故障排查
 
@@ -181,9 +177,9 @@ DSH 路由现在要求**按进程生成的页面 token**，并保留 same-origin
 - 受管机群：托管签名 CRX + update manifest，使用 `ExtensionSettings` / `ExtensionInstallForcelist`。
 - `.crx` 本身不能绕过开发者模式。打包还必须保护签名私钥，私钥绝不能提交到仓库。
 
-### 3. DSH `ctx.translator`
+### 3. DSH translator 后续
 
-按进程的页面 token 已实现。剩余一步是优先使用 DSH 的 `translator` 服务，保持 provider / 凭据一致，同时保留 same-origin / body / content-type / token 校验作为纵深防御。
+`ctx.translator` 已接入，并保留 Bing 直连 fallback；路由继续保留 same-origin / body / content-type / token 校验。后续可以在 DSH 提供配置后暴露付费/会话 provider 或 provider 选择器。
 
 ## 开发
 
