@@ -13,7 +13,7 @@ A selection translator for **DeepSeek Harness**, plus a companion browser extens
 | **DSH plugin** | Available, `1.0.0` | DeepSeek Harness Web UI | Plugin Manager / profile bundle |
 | **Browser extension** | Available, unpacked | Edge / Chrome, any `http(s)` page | Load unpacked (Developer mode) |
 | **Desktop all-app** | Planned | Word, WeChat, any Windows app | Separate desktop program, not in this package |
-| **Store / CRX install** | Store kit ready; not yet submitted | A Developer-mode-free install | Edge Add-ons listing or enterprise policy |
+| **Store / CRX install** | Submitted to Edge Add-ons; in review | A Developer-mode-free install | Edge Add-ons listing or enterprise policy |
 | **DSH translation** | Available (`ctx.translator` + Bing fallback) | DSH backend | Uses the app's translator service when available |
 
 The two available surfaces are independent: the DSH plugin runs inside Harness, the browser extension runs in Edge/Chrome, and either can be used without the other.

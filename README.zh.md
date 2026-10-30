@@ -13,7 +13,7 @@
 | **DSH 插件** | 可用，`1.0.0` | DeepSeek Harness Web UI | 插件管理器 / profile bundle |
 | **浏览器扩展** | 可用，解压缩加载 | Edge / Chrome 的 `http(s)` 网页 | Load unpacked（需要开发者模式） |
 | **全应用桌面版** | 规划中 | Word、微信、Windows 任意应用 | 独立桌面程序，不在本包内 |
-| **商店 / CRX 安装** | 商店材料已备好，尚未提交 | 免开发者模式安装 | Edge 加载项上架或企业策略 |
+| **商店 / CRX 安装** | 已提交 Edge 加载项，审核中 | 免开发者模式安装 | Edge 加载项上架或企业策略 |
 | **DSH 翻译** | 可用（`ctx.translator` + Bing fallback） | DSH 后端 | 优先使用应用翻译服务 |
 
 两种已交付形态彼此独立：DSH 插件在 Harness 内运行，浏览器扩展在 Edge/Chrome 内运行；可以只用其中一个。
