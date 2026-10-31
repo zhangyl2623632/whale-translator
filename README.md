@@ -11,9 +11,9 @@ A selection translator for **DeepSeek Harness**, plus a companion browser extens
 | Surface | Status | Where it works | How to install |
 |---|---|---|---|
 | **DSH plugin** | Available, `1.0.0` | DeepSeek Harness Web UI | Plugin Manager / profile bundle |
-| **Browser extension** | Available, unpacked | Edge / Chrome, any `http(s)` page | Load unpacked (Developer mode) |
+| **Browser extension** | Available, store (Hidden) + unpacked | Edge / Chrome, any `http(s)` page | [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf) / Load unpacked |
 | **Desktop all-app** | Windows spike available (mouse drag + hotkey) | Word, WeChat, any Windows app | Standalone WinForms spike in `desktop/` |
-| **Store / CRX install** | Submitted to Edge Add-ons; in review | A Developer-mode-free install | Edge Add-ons listing or enterprise policy |
+| **Store / CRX install** | **Live in Microsoft Edge Add-ons (Hidden)** | A Developer-mode-free install | [Edge Add-ons listing](https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf) |
 | **DSH translation** | Available (`ctx.translator` + Bing fallback) | DSH backend | Uses the app's translator service when available |
 
 The two available surfaces are independent: the DSH plugin runs inside Harness, the browser extension runs in Edge/Chrome, and either can be used without the other.
@@ -31,6 +31,17 @@ The two available surfaces are independent: the DSH plugin runs inside Harness, 
 - **Whale theme.** A custom line-art whale, deep-ocean navy, bioluminescent cyan, and a wave-glass card. The toolbar stays dark in both themes; the card follows the host theme.
 
 ## Install
+
+### Store (recommended for other people)
+
+The extension is live in Microsoft Edge Add-ons as a **hidden** listing:
+
+**https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf**
+
+- No Developer mode.
+- Hidden means it does not appear in store search; share the link.
+- The store build is signed and updated by Microsoft Edge.
+- For local development, use the unpacked path in section B.
 
 ### A. DSH plugin (recommended inside Harness)
 
@@ -180,11 +191,13 @@ A Windows spike exists in [`desktop/`](desktop/README.md): global mouse hook, UI
 
 Still needed for production: keyboard-triggered selection, a target-language picker, installer, code signing, auto-update, elevated-app handling, and macOS.
 
-### 2. Store / CRX packaging
+### 2. Store distribution
 
-- Publish to Edge Add-ons and/or Chrome Web Store for a normal, Developer-mode-free install.
-- For managed machines, host a signed CRX + update manifest and use `ExtensionSettings` / `ExtensionInstallForcelist`.
-- A `.crx` alone is not a bypass for Developer mode. Packaging also requires protecting the signing key; it must never be committed to the repository.
+The extension is live as a **hidden** Edge Add-ons listing:
+
+https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf
+
+Future updates require a new `manifest.json` version, a rebuilt ZIP, and a new review. For managed machines, host a signed CRX + update manifest and use `ExtensionSettings` / `ExtensionInstallForcelist`. A `.crx` alone is not a bypass for Developer mode; protect the signing key and never commit it.
 
 ### 3. DSH translator follow-up
 

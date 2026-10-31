@@ -26,6 +26,6 @@ This folder is the unpacked Manifest V3 extension. The full product manual cover
 - **Outbound data:** selected text is sent only after **Translate** is clicked, to `edge.microsoft.com`. No history, no disk writes. / 只在点击翻译后发送选中文字到 `edge.microsoft.com`，不保存历史、不写磁盘。
 - **Toolbar icon:** opens a small usage popup; it is not the translation trigger. / 工具栏图标打开使用说明，不是翻译触发按钮。
 
-The Edge Add-ons submission kit (listing, privacy policy, screenshots, ZIP builder) is in [`../store`](../store/README.md). It is prepared but not yet submitted. / Edge 加载项上架材料在 [`../store`](../store/README.md)，已备好但尚未提交。
+The extension is **live** in Microsoft Edge Add-ons as a hidden listing: https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf. The store kit is retained in [`../store`](../store/README.md). / 扩展已在 Microsoft Edge 加载项上架（Hidden）：https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf，上架材料保留在 [`../store`](../store/README.md)。
 
 For the desktop-wide version (Word, WeChat, any Windows app), see the “Roadmap” section of the [manual](../README.md#roadmap).

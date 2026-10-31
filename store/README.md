@@ -1,16 +1,26 @@
 # Edge Add-ons submission kit / Edge 加载项上架材料
 
-This folder contains everything needed for the **Microsoft Edge Add-ons** submission. The extension is ready to package; the remaining steps require the publisher's Microsoft account and Partner Center identity.
+**Status: Live (Hidden)** — approved and published in Microsoft Edge Add-ons.
 
-这个目录是 **Microsoft Edge 加载项**上架材料。扩展代码和素材已经准备好；最后几步必须由发布者本人的 Microsoft 账号和 Partner Center 身份完成。
+**状态：已上架（Hidden）** — 已通过审核并发布到 Microsoft Edge 加载项。
 
+- Listing: https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf
+- Store ID: `0RDCKCL3CFFR`
+- CRX ID: `ifophleakjkknlbldgjkoblmkmocnocf`
 - Publisher: individual (no company required)
-- Registration fee: **none** for the Microsoft Edge program
-- Recommended visibility: **Hidden** (share the listing URL with friends; no public search)
+- Recommended visibility: **Hidden** (share the listing URL; no public search)
 - Current version: `1.0.0`
-- Certification time: Microsoft says up to **7 business days**
-- Official guide: [Publish a Microsoft Edge extension](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/publish-extension)
-- Developer registration: [Register as a Microsoft Edge extension developer](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/create-dev-account)
+- This kit is retained for future updates.
+
+这个目录保留为 **Microsoft Edge 加载项**的上架材料，当前版本已上架；后续更新按同样的 listing/隐私材料提交。
+
+- Listing：https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf
+- Store ID：`0RDCKCL3CFFR`
+- CRX ID：`ifophleakjkknlbldgjkoblmkmocnocf`
+- 发布者：个人（不需要公司）
+- 可见性：**Hidden**（分享链接，商店搜索不到）
+- 当前版本：`1.0.0`
+- 本目录用于后续版本更新。
 
 ## What is ready
 
@@ -38,7 +48,9 @@ Output:
 store/dist/whale-translator-1.0.0.zip
 ```
 
-## What you must do
+## Original submission steps (completed for 1.0.0)
+
+The 1.0.0 submission is complete. For a future version: bump `manifest.json` `version`, rebuild the ZIP, upload it, update the listing if needed, and submit for review again. The steps below are retained as reference.
 
 These steps need your own Microsoft account; they cannot be delegated to the assistant.
 
@@ -82,9 +94,10 @@ Be precise in Partner Center. The extension:
 
 Select the data category that matches **“text or other user content”** and do not select categories the extension does not collect. The privacy policy must match these answers.
 
-## After approval
+## Live status
 
-- Send me the listing URL; I will add it to the README and a release note.
+- Listing: https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf
+- Status: **Live (Hidden)** as of 2026-10-31.
 - For updates, increment `manifest.json` `version`, rebuild the ZIP, and upload a new package.
 - Keep the extension name and short description stable unless you intentionally want to re-list.
 

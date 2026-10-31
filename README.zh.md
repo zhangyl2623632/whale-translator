@@ -11,9 +11,9 @@
 | 形态 | 状态 | 适用位置 | 安装方式 |
 |---|---|---|---|
 | **DSH 插件** | 可用，`1.0.0` | DeepSeek Harness Web UI | 插件管理器 / profile bundle |
-| **浏览器扩展** | 可用，解压缩加载 | Edge / Chrome 的 `http(s)` 网页 | Load unpacked（需要开发者模式） |
+| **浏览器扩展** | 可用，商店（Hidden）+ 解压缩加载 | Edge / Chrome 的 `http(s)` 网页 | [Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf) / Load unpacked |
 | **全应用桌面版** | Windows spike 可用（鼠标拖选 + 快捷键） | Word、微信、Windows 任意应用 | 独立 WinForms spike，在 `desktop/` |
-| **商店 / CRX 安装** | 已提交 Edge 加载项，审核中 | 免开发者模式安装 | Edge 加载项上架或企业策略 |
+| **商店 / CRX 安装** | **已在 Microsoft Edge 加载项上架（Hidden）** | 免开发者模式安装 | [Edge 加载项链接](https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf) |
 | **DSH 翻译** | 可用（`ctx.translator` + Bing fallback） | DSH 后端 | 优先使用应用翻译服务 |
 
 两种已交付形态彼此独立：DSH 插件在 Harness 内运行，浏览器扩展在 Edge/Chrome 内运行；可以只用其中一个。
@@ -31,6 +31,17 @@
 - **鲸鱼主题。** 手绘线稿鲸鱼、深海海军蓝、生物荧光青与波浪玻璃卡片。工具栏在明暗主题下都保持深色，卡片跟随宿主主题。
 
 ## 安装
+
+### 商店（推荐给其他人）
+
+扩展已在 Microsoft Edge 加载项上架，但设为 **Hidden**：
+
+**https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf**
+
+- 不需要开发者模式
+- Hidden 表示商店搜索不到，只能分享链接
+- 商店版本由 Microsoft Edge 签名和更新
+- 本地开发继续用 B 节的 load unpacked
 
 ### A. DSH 插件（Harness 内推荐）
 
@@ -180,11 +191,13 @@ Windows spike 已在 [`desktop/`](desktop/README.md)：全局鼠标钩子、UI A
 
 正式产品还缺：键盘划词、目标语言选择、安装器、代码签名、自动更新、高权限（elevated）应用处理、macOS。
 
-### 2. 商店 / CRX 打包
+### 2. 商店分发
 
-- 上架 Edge 加载项和/或 Chrome 网上应用店，实现正常的免开发者模式安装。
-- 受管机群：托管签名 CRX + update manifest，使用 `ExtensionSettings` / `ExtensionInstallForcelist`。
-- `.crx` 本身不能绕过开发者模式。打包还必须保护签名私钥，私钥绝不能提交到仓库。
+扩展已作为 **Hidden** 上架 Microsoft Edge 加载项：
+
+https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf
+
+以后更新需要提升 `manifest.json` 版本、重新打包并重新审核。受管机群可托管签名 CRX + update manifest，使用 `ExtensionSettings` / `ExtensionInstallForcelist`；`.crx` 本身不能绕过开发者模式，签名私钥绝不能提交到仓库。
 
 ### 3. DSH translator 后续
 
