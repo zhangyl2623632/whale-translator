@@ -11,8 +11,8 @@ namespace WhaleDesktop
     {
         private const int WS_EX_NOACTIVATE = 0x08000000;
         private const int WS_EX_TOOLWINDOW = 0x00000080;
-        private const int HeaderHeight = 56;
-        private const int PanelHeight = 340;
+        private const int HeaderHeight = 64;
+        private const int PanelHeight = 356;
 
         private readonly string selectedText;
         private readonly Point anchor;
@@ -39,7 +39,7 @@ namespace WhaleDesktop
             ForeColor = Color.White;
             Font = new Font("Microsoft YaHei", 9f, FontStyle.Regular, GraphicsUnit.Point);
             Width = 430;
-            Height = 56;
+            Height = HeaderHeight;
             DoubleBuffered = true;
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
             LoadWhaleImage();
@@ -49,7 +49,7 @@ namespace WhaleDesktop
 
             translateButton = new Button();
             translateButton.Text = "翻译";
-            translateButton.Bounds = new Rectangle(306, 12, 64, 32);
+            translateButton.Bounds = new Rectangle(306, 16, 64, 32);
             translateButton.FlatStyle = FlatStyle.Flat;
             translateButton.FlatAppearance.BorderSize = 0;
             translateButton.BackColor = Color.FromArgb(32, 196, 204);
@@ -61,7 +61,7 @@ namespace WhaleDesktop
 
             closeButton = new Button();
             closeButton.Text = "×";
-            closeButton.Bounds = new Rectangle(378, 12, 32, 32);
+            closeButton.Bounds = new Rectangle(378, 16, 32, 32);
             closeButton.FlatStyle = FlatStyle.Flat;
             closeButton.FlatAppearance.BorderSize = 0;
             closeButton.BackColor = Color.FromArgb(7, 27, 40);
@@ -189,13 +189,13 @@ namespace WhaleDesktop
 
             if (whaleImage != null)
             {
-                e.Graphics.DrawImage(whaleImage, 16, 12, 32, 32);
+                e.Graphics.DrawImage(whaleImage, 16, 16, 32, 32);
             }
             else
             {
                 using (SolidBrush circle = new SolidBrush(Color.FromArgb(32, 196, 204)))
                 {
-                    e.Graphics.FillEllipse(circle, 16, 12, 32, 32);
+                    e.Graphics.FillEllipse(circle, 16, 16, 32, 32);
                 }
             }
 
@@ -204,11 +204,11 @@ namespace WhaleDesktop
             using (SolidBrush titleBrush = new SolidBrush(Color.White))
             using (SolidBrush subBrush = new SolidBrush(Color.FromArgb(150, 199, 211)))
             {
-                e.Graphics.DrawString("鲸译", titleFont, titleBrush, 56, 7);
-                e.Graphics.DrawString("WHALE MODE · 英汉互译", subFont, subBrush, 58, 31);
+                e.Graphics.DrawString("鲸译", titleFont, titleBrush, 56, 10);
+                e.Graphics.DrawString("WHALE MODE · 英汉互译", subFont, subBrush, 58, 34);
             }
 
-            Rectangle chip = new Rectangle(170, 16, 126, 24);
+            Rectangle chip = new Rectangle(206, 20, 94, 24);
             using (GraphicsPath path = RoundedRect(chip, 12))
             using (SolidBrush fill = new SolidBrush(Color.FromArgb(30, 255, 255, 255)))
             using (Pen border = new Pen(Color.FromArgb(65, 155, 175), 1f))
