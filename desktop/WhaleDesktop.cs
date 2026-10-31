@@ -61,7 +61,7 @@ namespace WhaleDesktop
         private readonly NotifyIcon tray;
         private HotkeyWindow hotkey;
         private string hotkeyLabel;
-        private OverlayFormV2 overlay;
+        private OverlayFormV3 overlay;
 
         public TrayContext()
         {
@@ -184,7 +184,7 @@ namespace WhaleDesktop
                 overlay.Dispose();
                 overlay = null;
             }
-            overlay = new OverlayFormV2(trimmed, point);
+            overlay = new OverlayFormV3(trimmed, point);
             overlay.FormClosed += delegate { overlay = null; };
             overlay.Show();
             Log.Write("overlay: " + trimmed.Length + " chars at " + point);

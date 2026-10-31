@@ -34,6 +34,7 @@ New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir 'WhaleDesktop.exe'
 $source = Join-Path $desktop 'WhaleDesktop.cs'
 $overlaySource = Join-Path $desktop 'OverlayFormV2.cs'
+$overlaySource3 = Join-Path $desktop 'OverlayFormV3.cs'
 $assemblyInfo = Join-Path $desktop 'AssemblyInfo.cs'
 $icon = Join-Path $desktop 'whale.ico'
 
@@ -48,6 +49,7 @@ $arguments = @(
 foreach ($ref in $refs) { $arguments += ('/r:' + $ref) }
 $arguments += $source
 $arguments += $overlaySource
+$arguments += $overlaySource3
 $arguments += $assemblyInfo
 
 & $csc @arguments
