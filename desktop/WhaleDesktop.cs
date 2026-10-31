@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -58,6 +59,8 @@ namespace WhaleDesktop
         private readonly Form dispatcher;
         private readonly MouseHook hook;
         private readonly NotifyIcon tray;
+        private HotkeyWindow hotkey;
+        private string hotkeyLabel;
         private OverlayForm overlay;
 
         public TrayContext()
@@ -74,7 +77,26 @@ namespace WhaleDesktop
             hook.Clicked += OnClicked;
             hook.Install();
 
+            try
+            {
+                hotkey = HotkeyWindow.TryInstall(handle, out hotkeyLabel);
+                if (hotkey != null) hotkey.Pressed += OnHotkey;
+            }
+            catch (Exception ex)
+            {
+                Log.Write("hotkey install: " + ex.Message);
+                hotkey = null;
+                hotkeyLabel = null;
+            }
+
             ContextMenuStrip menu = new ContextMenuStrip();
+            menu.Items.Add("翻译当前选区（" + (hotkeyLabel != null ? hotkeyLabel : "快捷键不可用") + "）", null, delegate { OnHotkey(); });
+            menu.Items.Add("打开日志", null, delegate
+            {
+                try { Process.Start("notepad.exe", Path.Combine(Path.GetTempPath(), "whale-desktop.log")); }
+                catch { }
+            });
+            menu.Items.Add(new ToolStripSeparator());
             menu.Items.Add("退出", null, delegate { ExitThread(); });
             tray = new NotifyIcon();
             try
@@ -89,19 +111,29 @@ namespace WhaleDesktop
             tray.Text = "鲸译 · 划词翻译（spike）";
             tray.ContextMenuStrip = menu;
             tray.Visible = true;
-            tray.ShowBalloonTip(1500, "鲸译已启动", "选中文字后松开鼠标，点浮出的“翻译”。", ToolTipIcon.Info);
-            Log.Write("started");
+            tray.ShowBalloonTip(1800, "鲸译已启动", "鼠标拖选文字，或选中后按 " + (hotkeyLabel != null ? hotkeyLabel : "托盘菜单") + "。", ToolTipIcon.Info);
+            Log.Write("started; hotkey=" + (hotkey != null ? hotkeyLabel : "unavailable"));
+        }
+
+        private void OnHotkey()
+        {
+            CaptureSelection(Cursor.Position, true);
         }
 
         private void OnDragCompleted(Point point)
         {
-            Log.Write("drag at " + point);
+            CaptureSelection(point, false);
+        }
+
+        private void CaptureSelection(Point point, bool preferFocused)
+        {
+            Log.Write("capture at " + point + " focused=" + preferFocused);
             ThreadPool.QueueUserWorkItem(delegate
             {
                 try
                 {
                     Thread.Sleep(90);
-                    string text = SelectionReader.TryReadUia(point);
+                    string text = preferFocused ? SelectionReader.TryReadFocusedUia() : SelectionReader.TryReadUia(point);
                     Log.Write("uia " + (text == null ? "null" : text.Length + " chars"));
                     if (text == null)
                     {
@@ -161,6 +193,7 @@ namespace WhaleDesktop
         protected override void ExitThreadCore()
         {
             try { hook.Dispose(); } catch { }
+            try { if (hotkey != null) hotkey.Dispose(); } catch { }
             if (overlay != null) { overlay.Dispose(); overlay = null; }
             if (tray != null) { tray.Visible = false; tray.Dispose(); }
             if (dispatcher != null) { dispatcher.Dispose(); }
@@ -267,6 +300,72 @@ namespace WhaleDesktop
         }
     }
 
+    internal sealed class HotkeyWindow : NativeWindow, IDisposable
+    {
+        private const int WM_HOTKEY = 0x0312;
+        private const int HOTKEY_ID = 0x5748;
+        private const uint MOD_ALT = 0x0001;
+        private const uint MOD_CONTROL = 0x0002;
+        private const uint MOD_SHIFT = 0x0004;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        public event Action Pressed;
+
+        public HotkeyWindow(IntPtr handle, string label, uint modifiers, uint vk)
+        {
+            AssignHandle(handle);
+            if (!RegisterHotKey(handle, HOTKEY_ID, modifiers, vk))
+            {
+                int error = Marshal.GetLastWin32Error();
+                ReleaseHandle();
+                throw new InvalidOperationException("快捷键 " + label + " 注册失败，错误码 " + error);
+            }
+        }
+
+        public static HotkeyWindow TryInstall(IntPtr handle, out string label)
+        {
+            string[] labels = new string[] { "Ctrl+Alt+W", "Ctrl+Alt+T", "Ctrl+Shift+Alt+T" };
+            uint[] modifiers = new uint[] { MOD_CONTROL | MOD_ALT, MOD_CONTROL | MOD_ALT, MOD_CONTROL | MOD_ALT | MOD_SHIFT };
+            uint[] keys = new uint[] { (uint)Keys.W, (uint)Keys.T, (uint)Keys.T };
+            for (int index = 0; index < labels.Length; index++)
+            {
+                try
+                {
+                    HotkeyWindow window = new HotkeyWindow(handle, labels[index], modifiers[index], keys[index]);
+                    label = labels[index];
+                    return window;
+                }
+                catch (Exception ex)
+                {
+                    Log.Write("hotkey " + labels[index] + ": " + ex.Message);
+                }
+            }
+            label = null;
+            return null;
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_HOTKEY && m.WParam.ToInt32() == HOTKEY_ID)
+            {
+                Action handler = Pressed;
+                if (handler != null) handler();
+            }
+            base.WndProc(ref m);
+        }
+
+        public void Dispose()
+        {
+            try { UnregisterHotKey(Handle, HOTKEY_ID); } catch { }
+            try { ReleaseHandle(); } catch { }
+        }
+    }
+
     internal static class SelectionReader
     {
         [DllImport("user32.dll")]
@@ -291,12 +390,54 @@ namespace WhaleDesktop
             }
         }
 
+        public static string TryReadFocusedUia()
+        {
+            try
+            {
+                Task<string> task = Task.Run<string>(delegate { return ReadFocusedUia(); });
+                if (!task.Wait(1500)) return null;
+                return task.Result;
+            }
+            catch (Exception ex)
+            {
+                Log.Write("uia-focused: " + ex.Message);
+                return null;
+            }
+        }
+
+        private static string ReadFocusedUia()
+        {
+            try
+            {
+                AutomationElement focused = AutomationElement.FocusedElement;
+                return ReadElementSelection(focused);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("uia-focused-read: " + ex.Message);
+                return null;
+            }
+        }
+
         private static string ReadUia(Point point)
         {
             try
             {
                 AutomationElement element = AutomationElement.FromPoint(new System.Windows.Point(point.X, point.Y));
-                for (int depth = 0; depth < 5 && element != null; depth++)
+                return ReadElementSelection(element);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("uia-read: " + ex.Message);
+            }
+            return null;
+        }
+
+        private static string ReadElementSelection(AutomationElement element)
+        {
+            for (int depth = 0; depth < 5 && element != null; depth++)
+            {
+                try
                 {
                     object pattern;
                     if (element.TryGetCurrentPattern(TextPattern.Pattern, out pattern))
@@ -317,10 +458,11 @@ namespace WhaleDesktop
                     }
                     element = TreeWalker.ControlViewWalker.GetParent(element);
                 }
-            }
-            catch (Exception ex)
-            {
-                Log.Write("uia-read: " + ex.Message);
+                catch (Exception ex)
+                {
+                    Log.Write("uia-walk: " + ex.Message);
+                    return null;
+                }
             }
             return null;
         }
@@ -396,7 +538,7 @@ namespace WhaleDesktop
             titleLabel.Text = "鲸译";
             titleLabel.ForeColor = Color.White;
             titleLabel.Font = new Font("Microsoft YaHei", 11f, FontStyle.Bold, GraphicsUnit.Point);
-            titleLabel.Bounds = new Rectangle(16, 9, 48, 26);
+            titleLabel.Bounds = new Rectangle(16, 9, 54, 26);
             titleLabel.BackColor = Color.Transparent;
             Controls.Add(titleLabel);
 
@@ -404,7 +546,7 @@ namespace WhaleDesktop
             directionLabel.Text = chinese ? "自动检测 · 中文 → English" : "自动检测 · English → 中文";
             directionLabel.ForeColor = Color.FromArgb(143, 198, 210);
             directionLabel.Font = new Font("Microsoft YaHei", 8f, FontStyle.Regular, GraphicsUnit.Point);
-            directionLabel.Bounds = new Rectangle(66, 13, 230, 20);
+            directionLabel.Bounds = new Rectangle(74, 13, 208, 20);
             directionLabel.BackColor = Color.Transparent;
             Controls.Add(directionLabel);
 

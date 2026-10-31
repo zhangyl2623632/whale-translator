@@ -12,7 +12,7 @@ A selection translator for **DeepSeek Harness**, plus a companion browser extens
 |---|---|---|---|
 | **DSH plugin** | Available, `1.0.0` | DeepSeek Harness Web UI | Plugin Manager / profile bundle |
 | **Browser extension** | Available, unpacked | Edge / Chrome, any `http(s)` page | Load unpacked (Developer mode) |
-| **Desktop all-app** | Windows spike available (mouse drag) | Word, WeChat, any Windows app | Standalone WinForms spike in `desktop/` |
+| **Desktop all-app** | Windows spike available (mouse drag + hotkey) | Word, WeChat, any Windows app | Standalone WinForms spike in `desktop/` |
 | **Store / CRX install** | Submitted to Edge Add-ons; in review | A Developer-mode-free install | Edge Add-ons listing or enterprise policy |
 | **DSH translation** | Available (`ctx.translator` + Bing fallback) | DSH backend | Uses the app's translator service when available |
 
@@ -72,7 +72,7 @@ Browser-internal pages (`edge://`, `chrome://`, the extension store) cannot be i
 
 ### D. Desktop spike (Windows, proof of concept)
 
-A standalone WinForms spike lives in [`desktop/`](desktop/README.md). It uses a global mouse hook, UI Automation with a clipboard fallback, and a topmost overlay. It supports mouse-drag selections only; it has no installer or signing and is not part of the Edge add-on package.
+A standalone WinForms spike lives in [`desktop/`](desktop/README.md). It uses a global mouse hook, UI Automation with a clipboard fallback, and a topmost overlay. Mouse-drag selections are automatic; keyboard selections use **Ctrl+Alt+W**. A per-user install script creates Start Menu and Desktop shortcuts. It is unsigned and not part of the Edge add-on package.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\desktop\build.ps1

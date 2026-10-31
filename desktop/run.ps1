@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $source = Join-Path $PSScriptRoot 'bin\WhaleDesktop.exe'
 if (-not (Test-Path $source)) { throw "Build first: .\desktop\build.ps1" }
 $targetDir = Join-Path $env:LOCALAPPDATA 'WhaleDesktop'

@@ -10,14 +10,14 @@ Windows-only 全应用划词翻译的 **技术 spike**，不是最终桌面产�
 - Installs a low-level mouse hook.
 - After a mouse drag (not a click), reads the selection with UI Automation.
 - If UI Automation has no selection, falls back to clipboard copy/restore.
+- Supports a global hotkey for keyboard selections: **Ctrl+Alt+W** (falls back to Ctrl+Alt+T / Ctrl+Shift+Alt+T if taken).
 - Shows a small topmost toolbar near the cursor.
 - Click **翻译** to call Microsoft's Edge translator endpoint and show the result in a card.
 - Copy the translation; close with the X or the tray menu.
 
 ## What it deliberately does not do
 
-- No installer, code signing, auto-update, or settings UI.
-- No keyboard selection (only mouse drag for now).
+- No code signing, auto-update, or settings UI.
 - No target-language picker; it auto-detects Chinese/English and uses the opposite language.
 - No macOS version.
 - No Chromium/Electron host integration; it is a standalone WinForms process.
@@ -37,17 +37,29 @@ Output:
 desktop\bin\WhaleDesktop.exe
 ```
 
+## Install (per-user)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\desktop\install.ps1
+```
+
+This copies the app to `%LOCALAPPDATA%\WhaleDesktop` and creates Start Menu and Desktop shortcuts. It does not require admin rights and does not add a startup entry.
+
+Uninstall:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\desktop\uninstall.ps1
+```
+
 ## Run
 
-1. Copy `WhaleDesktop.exe` to a local folder such as `%LOCALAPPDATA%\WhaleDesktop\` or your Desktop.
-   - Some managed/agent environments block launching EXEs directly from the workspace drive; copying to a local folder avoids that.
-   - Or run `powershell -ExecutionPolicy Bypass -File .\desktop\run.ps1`, which copies it to `%LOCALAPPDATA%\WhaleDesktop` and starts it.
-2. Double-click `WhaleDesktop.exe`.
-3. A whale tray icon appears. There is no main window.
-4. In Word, WeChat, Notepad, or a browser, **drag-select** text with the mouse and release.
-5. A dark toolbar appears above/below the cursor.
-6. Click **翻译**. The card shows the translation; **复制译文** copies it.
-7. Exit from the tray icon menu.
+1. Start from the **Whale Translator** shortcut, or run `WhaleDesktop.exe`.
+2. A whale tray icon appears. There is no main window.
+3. In Word, WeChat, Notepad, or a browser, **drag-select** text with the mouse and release.
+4. A dark toolbar appears above/below the cursor.
+5. Click **翻译**. The card shows the translation; **复制译文** copies it.
+6. Keyboard selection: select with Shift+arrows/Ctrl+A, then press **Ctrl+Alt+W**.
+7. Exit from the tray icon menu; the menu also has “翻译当前选区”.
 
 ## Test checklist
 
@@ -55,6 +67,7 @@ desktop\bin\WhaleDesktop.exe
 - [ ] Word: drag-select a paragraph → translation preserves reasonable line breaks
 - [ ] WeChat: drag-select a message → toolbar appears (clipboard fallback if UIA is unavailable)
 - [ ] Edge/Chrome: drag-select page text
+- [ ] Keyboard: select with Shift+arrows → Ctrl+Alt+W → toolbar
 - [ ] Copy result
 - [ ] Click outside closes the toolbar
 - [ ] Tray → 退出 stops the hook
@@ -75,9 +88,9 @@ Boot marker:
 
 ## Known limitations in this spike
 
-- **Mouse drag only.** Keyboard selections (Shift+arrows, Ctrl+A) do not trigger the toolbar.
+- **Mouse drag is automatic; keyboard selection needs Ctrl+Alt+W.** If that hotkey is taken, the app tries Ctrl+Alt+T and Ctrl+Shift+Alt+T; the tray menu always works.
 - **Clipboard fallback may replace the clipboard.** It restores the previous text when possible; non-text clipboard contents cannot be restored.
-- **Clipboard fallback sends Ctrl+C** after a drag; apps that use Ctrl+C for something else may react unexpectedly.
+- **Clipboard fallback sends Ctrl+C** after a drag or hotkey; apps that use Ctrl+C for something else may react unexpectedly.
 - **UIA support varies by app.** Word/Notepad/Chromium usually expose TextPattern; WeChat may only work through the clipboard path.
 - **Topmost/no-activate overlay** may behave differently under some apps; if the toolbar steals focus, the selection can collapse.
 - **Translation is Bing-only** in this spike and shares the same network dependency as the extension.
@@ -88,8 +101,7 @@ Boot marker:
 
 If Word/WeChat selection and the overlay pass:
 
-1. Add a keyboard-triggered path and a target-language toggle.
-2. Package with an installer and an app icon.
-3. Add code signing and auto-update.
-4. Consider a native WinUI/Windows App SDK host for a more modern UI.
-5. Keep the privacy rule: send text only after an explicit translate action.
+1. Add a target-language picker and a configurable hotkey.
+2. Add code signing and auto-update.
+3. Consider a native WinUI/Windows App SDK host for a more modern UI.
+4. Keep the privacy rule: send text only after an explicit translate action.

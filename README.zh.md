@@ -12,7 +12,7 @@
 |---|---|---|---|
 | **DSH 插件** | 可用，`1.0.0` | DeepSeek Harness Web UI | 插件管理器 / profile bundle |
 | **浏览器扩展** | 可用，解压缩加载 | Edge / Chrome 的 `http(s)` 网页 | Load unpacked（需要开发者模式） |
-| **全应用桌面版** | Windows spike 可用（鼠标拖选） | Word、微信、Windows 任意应用 | 独立 WinForms spike，在 `desktop/` |
+| **全应用桌面版** | Windows spike 可用（鼠标拖选 + 快捷键） | Word、微信、Windows 任意应用 | 独立 WinForms spike，在 `desktop/` |
 | **商店 / CRX 安装** | 已提交 Edge 加载项，审核中 | 免开发者模式安装 | Edge 加载项上架或企业策略 |
 | **DSH 翻译** | 可用（`ctx.translator` + Bing fallback） | DSH 后端 | 优先使用应用翻译服务 |
 
@@ -72,7 +72,7 @@
 
 ### D. 桌面 spike（Windows，概念验证）
 
-独立 WinForms spike 在 [`desktop/`](desktop/README.md)，使用全局鼠标钩子、UI Automation + 剪贴板兜底、置顶浮窗。只支持鼠标拖选，没有安装器/签名，也不在 Edge 加载项包内。
+独立 WinForms spike 在 [`desktop/`](desktop/README.md)，使用全局鼠标钩子、UI Automation + 剪贴板兜底、置顶浮窗。鼠标拖选自动触发；键盘划词用 **Ctrl+Alt+W**。带一个按用户安装的脚本，会创建开始菜单和桌面快捷方式。未签名，也不在 Edge 加载项包内。
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\desktop\build.ps1

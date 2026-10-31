@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $desktop = $PSScriptRoot
 $root = Split-Path -Parent $desktop
 $cscDir = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319'
@@ -33,6 +33,7 @@ $outDir = Join-Path $desktop 'bin'
 New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 $out = Join-Path $outDir 'WhaleDesktop.exe'
 $source = Join-Path $desktop 'WhaleDesktop.cs'
+$assemblyInfo = Join-Path $desktop 'AssemblyInfo.cs'
 $icon = Join-Path $desktop 'whale.ico'
 
 $arguments = @(
@@ -45,6 +46,7 @@ $arguments = @(
 )
 foreach ($ref in $refs) { $arguments += ('/r:' + $ref) }
 $arguments += $source
+$arguments += $assemblyInfo
 
 & $csc @arguments
 if ($LASTEXITCODE -ne 0) { throw "csc failed with exit code $LASTEXITCODE" }
