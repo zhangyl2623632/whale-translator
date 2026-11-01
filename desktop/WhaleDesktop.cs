@@ -329,9 +329,9 @@ namespace WhaleDesktop
 
         public static HotkeyWindow TryInstall(IntPtr handle, out string label)
         {
-            string[] labels = new string[] { "Ctrl+Shift+F9", "Ctrl+Alt+F9", "Ctrl+Shift+Alt+W" };
-            uint[] modifiers = new uint[] { MOD_CONTROL | MOD_SHIFT, MOD_CONTROL | MOD_ALT, MOD_CONTROL | MOD_ALT | MOD_SHIFT };
-            uint[] keys = new uint[] { (uint)Keys.F9, (uint)Keys.F9, (uint)Keys.W };
+            string[] labels = new string[] { "Ctrl+Alt+Shift+W", "Ctrl+Alt+Shift+T", "Ctrl+Alt+Shift+Y" };
+            uint[] modifiers = new uint[] { MOD_CONTROL | MOD_ALT | MOD_SHIFT, MOD_CONTROL | MOD_ALT | MOD_SHIFT, MOD_CONTROL | MOD_ALT | MOD_SHIFT };
+            uint[] keys = new uint[] { (uint)Keys.W, (uint)Keys.T, (uint)Keys.Y };
             for (int index = 0; index < labels.Length; index++)
             {
                 try
@@ -368,11 +368,36 @@ namespace WhaleDesktop
 
     internal static class SelectionReader
     {
-        [DllImport("user32.dll")]
-        private static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+        [StructLayout(LayoutKind.Sequential)]
+        private struct INPUT
+        {
+            public uint type;
+            public InputUnion U;
+        }
 
-        private const byte VK_CONTROL = 0x11;
-        private const byte VK_C = 0x43;
+        [StructLayout(LayoutKind.Explicit)]
+        private struct InputUnion
+        {
+            [FieldOffset(0)]
+            public KEYBDINPUT ki;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct KEYBDINPUT
+        {
+            public ushort wVk;
+            public ushort wScan;
+            public uint dwFlags;
+            public uint time;
+            public IntPtr dwExtraInfo;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+        private const uint INPUT_KEYBOARD = 1;
+        private const ushort VK_CONTROL = 0x11;
+        private const ushort VK_C = 0x43;
         private const uint KEYEVENTF_KEYUP = 0x0002;
 
         public static string TryReadUia(Point point)
@@ -506,10 +531,19 @@ namespace WhaleDesktop
 
         private static void SendCtrlC()
         {
-            keybd_event(VK_CONTROL, 0, 0, UIntPtr.Zero);
-            keybd_event(VK_C, 0, 0, UIntPtr.Zero);
-            keybd_event(VK_C, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
-            keybd_event(VK_CONTROL, 0, KEYEVENTF_KEYUP, UIntPtr.Zero);
+            INPUT[] inputs = new INPUT[4];
+            inputs[0].type = INPUT_KEYBOARD;
+            inputs[0].U.ki.wVk = VK_CONTROL;
+            inputs[1].type = INPUT_KEYBOARD;
+            inputs[1].U.ki.wVk = VK_C;
+            inputs[2].type = INPUT_KEYBOARD;
+            inputs[2].U.ki.wVk = VK_C;
+            inputs[2].U.ki.dwFlags = KEYEVENTF_KEYUP;
+            inputs[3].type = INPUT_KEYBOARD;
+            inputs[3].U.ki.wVk = VK_CONTROL;
+            inputs[3].U.ki.dwFlags = KEYEVENTF_KEYUP;
+            uint sent = SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(INPUT)));
+            if (sent != (uint)inputs.Length) Log.Write("sendinput sent=" + sent);
         }
     }
 

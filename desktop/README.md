@@ -10,7 +10,7 @@ Windows-only 全应用划词翻译的 **技术 spike**，不是最终桌面产�
 - Installs a low-level mouse hook.
 - After a mouse drag (not a click), reads the selection with UI Automation.
 - If UI Automation has no selection, falls back to clipboard copy/restore.
-- Supports a global hotkey for keyboard selections: **Ctrl+Shift+F9** (falls back to Ctrl+Alt+F9 / Ctrl+Shift+Alt+W if taken).
+- Supports a global hotkey for keyboard selections: **Ctrl+Alt+Shift+W** (falls back to Ctrl+Alt+Shift+T / Ctrl+Alt+Shift+Y if taken).
 - Shows a small topmost toolbar near the cursor.
 - Click **翻译** to call Microsoft's Edge translator endpoint and show the result in a card.
 - Copy the translation; close with the X or the tray menu.
@@ -58,7 +58,7 @@ powershell -ExecutionPolicy Bypass -File .\desktop\uninstall.ps1
 3. In Word, WeChat, Notepad, or a browser, **drag-select** text with the mouse and release.
 4. A dark toolbar appears above/below the cursor.
 5. Click **翻译**. The card shows the translation; **复制译文** copies it.
-6. Keyboard selection: select with Shift+arrows/Ctrl+A, then press **Ctrl+Shift+F9**.
+6. Keyboard selection: select with Shift+arrows/Ctrl+A, then press **Ctrl+Alt+Shift+W**.
 7. Exit from the tray icon menu; the menu also has “翻译当前选区”.
 
 ## Test checklist
@@ -67,7 +67,7 @@ powershell -ExecutionPolicy Bypass -File .\desktop\uninstall.ps1
 - [ ] Word: drag-select a paragraph → translation preserves reasonable line breaks
 - [ ] WeChat: drag-select a message → toolbar appears (clipboard fallback if UIA is unavailable)
 - [ ] Edge/Chrome: drag-select page text
-- [ ] Keyboard: select with Shift+arrows → Ctrl+Shift+F9 → toolbar
+- [ ] Keyboard: select with Shift+arrows → Ctrl+Alt+Shift+W → toolbar
 - [ ] Copy result
 - [ ] Click outside closes the toolbar
 - [ ] Tray → 退出 stops the hook
@@ -88,7 +88,7 @@ Boot marker:
 
 ## Known limitations in this spike
 
-- **Mouse drag is automatic; keyboard selection needs Ctrl+Shift+F9.** If that hotkey is taken, the app tries Ctrl+Alt+F9 and Ctrl+Shift+Alt+W; the tray menu always works.
+- **Mouse drag is automatic; keyboard selection needs Ctrl+Alt+Shift+W.** If that hotkey is taken, the app tries Ctrl+Alt+Shift+T and Ctrl+Alt+Shift+Y; the tray menu always works.
 - **Clipboard fallback may replace the clipboard.** It restores the previous text when possible; non-text clipboard contents cannot be restored.
 - **Clipboard fallback sends Ctrl+C** after a drag or hotkey; apps that use Ctrl+C for something else may react unexpectedly.
 - **UIA support varies by app.** Word/Notepad/Chromium usually expose TextPattern; WeChat may only work through the clipboard path.

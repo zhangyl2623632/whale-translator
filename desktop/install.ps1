@@ -28,4 +28,4 @@ foreach ($shortcutPath in @($startShortcut, $desktopShortcut)) {
 Write-Output "Installed: $target"
 Write-Output "Start Menu: $startShortcut"
 Write-Output "Desktop: $desktopShortcut"
-Write-Output "Run from the tray icon; translate with mouse drag or Ctrl+Shift+F9."
+Write-Output "Run from the tray icon; translate with mouse drag or Ctrl+Alt+Shift+W."
