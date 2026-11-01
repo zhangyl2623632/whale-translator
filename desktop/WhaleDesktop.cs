@@ -329,9 +329,9 @@ namespace WhaleDesktop
 
         public static HotkeyWindow TryInstall(IntPtr handle, out string label)
         {
-            string[] labels = new string[] { "Ctrl+Alt+W", "Ctrl+Alt+T", "Ctrl+Shift+Alt+T" };
-            uint[] modifiers = new uint[] { MOD_CONTROL | MOD_ALT, MOD_CONTROL | MOD_ALT, MOD_CONTROL | MOD_ALT | MOD_SHIFT };
-            uint[] keys = new uint[] { (uint)Keys.W, (uint)Keys.T, (uint)Keys.T };
+            string[] labels = new string[] { "Ctrl+Shift+F9", "Ctrl+Alt+F9", "Ctrl+Shift+Alt+W" };
+            uint[] modifiers = new uint[] { MOD_CONTROL | MOD_SHIFT, MOD_CONTROL | MOD_ALT, MOD_CONTROL | MOD_ALT | MOD_SHIFT };
+            uint[] keys = new uint[] { (uint)Keys.F9, (uint)Keys.F9, (uint)Keys.W };
             for (int index = 0; index < labels.Length; index++)
             {
                 try
@@ -473,12 +473,24 @@ namespace WhaleDesktop
             {
                 string oldText = Clipboard.ContainsText() ? Clipboard.GetText() : null;
                 SendCtrlC();
-                Thread.Sleep(150);
-                string selected = Clipboard.ContainsText() ? Clipboard.GetText() : null;
+                string selected = null;
+                for (int attempt = 0; attempt < 12; attempt++)
+                {
+                    Thread.Sleep(60);
+                    if (!Clipboard.ContainsText()) continue;
+                    string current = Clipboard.GetText();
+                    if (oldText == null || current != oldText)
+                    {
+                        selected = current;
+                        break;
+                    }
+                }
                 if (oldText != null)
                 {
                     try { Clipboard.SetText(oldText); } catch { }
                 }
+                Log.Write("clipboard old=" + (oldText == null ? "null" : oldText.Length + "c") +
+                    " selected=" + (selected == null ? "null" : selected.Length + "c"));
                 if (selected == null) return null;
                 selected = selected.Trim();
                 if (selected.Length == 0) return null;
