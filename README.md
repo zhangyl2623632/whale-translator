@@ -25,6 +25,7 @@ The two available surfaces are independent: the DSH plugin runs inside Harness, 
 - **Chinese ↔ English.** The source language is detected locally; the target can be switched in the card.
 - **Line breaks are preserved.** The newline skeleton is verified after the provider responds; if it changes, the text is retranslated line by line and the original leading/trailing whitespace is restored.
 - **Only the translation.** The result card does not repeat the source text or add a “Translation:” prefix.
+- **Draggable result card.** Drag the panel by its header to move it out of the way; the position stays while the result loads and while copying.
 - **Toolbar actions.** Copy, read aloud with the browser speech engine, local extractive summary, search in a Bing tab, and a small more menu.
 - **Fast failure, not a slow fallback.** Bing is the only upstream. On a timeout or network error the card fails quickly and offers **Retry**; the old slow MyMemory fallback has been removed.
 - **Bounded work.** Selections are capped at 12,000 characters. Long text is split into chunks and translated with limited concurrency. The DSH route has a 12-second total budget; the client waits 15 seconds.
@@ -227,6 +228,7 @@ The tests mock `fetch`; they do not call the network. There are no npm runtime d
 ## Version
 
 `1.0.0` — DSH plugin and unpacked browser extension.
+`1.1.0` — draggable result card (store update pending).
 
 The whale glyph is an original composition built on the Lucide `whale` outline (ISC). See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 

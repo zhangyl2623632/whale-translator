@@ -88,7 +88,7 @@
 
   const PANEL_MARKUP = `
     <section class="wt-panel" role="dialog" aria-label="鲸译翻译" tabindex="-1" hidden>
-      <header class="wt-head">
+      <header class="wt-head" title="按住拖动面板" data-drag-handle="panel">
         <span class="wt-head-orb">${whale(24)}</span>
         <div class="wt-head-copy">
           <div class="wt-head-title" data-ref="title">鲸译</div>
@@ -291,6 +291,7 @@
     const barWrap = root.querySelector('.wt-bar-wrap')
     const more = root.querySelector('.wt-more')
     const panel = root.querySelector('.wt-panel')
+    const panelHead = panel.querySelector('.wt-head')
     const content = root.querySelector('[data-ref="content"]')
     const title = root.querySelector('[data-ref="title"]')
     const subtitle = root.querySelector('[data-ref="subtitle"]')
@@ -317,6 +318,7 @@
     let dismissed = null
     let copied = false
     let warmedAt = 0
+    let panelDrag = null
 
     function isOurNode(node) {
       if (!node) return false
@@ -467,12 +469,16 @@
       }
 
       if (isPanel) {
-        host.style.left = `${state.panel.left}px`
-        host.style.top = `${state.panel.top}px`
+        const panelPosition = state.panelPosition
+        const panelLeft = panelPosition ? panelPosition.left : state.panel.left
+        const panelTop = panelPosition ? panelPosition.top : state.panel.top
+        const panelMaxHeight = panelPosition ? panelPosition.maxHeight : state.panel.maxHeight
+        host.style.left = `${panelLeft}px`
+        host.style.top = `${panelTop}px`
         host.style.width = `${state.panel.width}px`
         host.style.height = 'auto'
-        host.style.maxHeight = `${state.panel.maxHeight}px`
-        panel.style.maxHeight = `${state.panel.maxHeight}px`
+        host.style.maxHeight = `${panelMaxHeight}px`
+        panel.style.maxHeight = `${panelMaxHeight}px`
         langs.hidden = isSummary
         title.textContent = isSummary ? '鲸语摘要' : '鲸译'
         subtitle.textContent = isSummary ? 'SUMMARY · 本地抽取' : 'WHALE MODE · 英汉互译'
@@ -510,7 +516,64 @@
       more.hidden = true
     }
 
+    function stopPanelDrag() {
+      if (!panelDrag) return
+      panelDrag = null
+      panel.classList.remove('wt-dragging')
+      document.removeEventListener('mousemove', onPanelDragMove, true)
+      document.removeEventListener('mouseup', onPanelDragEnd, true)
+    }
+
+    function updatePanelPosition(left, top) {
+      if (!state || !state.panel) return
+      const width = host.offsetWidth || state.panel.width
+      const height = host.offsetHeight || 1
+      const maxLeft = Math.max(EDGE, window.innerWidth - width - EDGE)
+      const maxTop = Math.max(EDGE, window.innerHeight - height - EDGE)
+      const nextLeft = clamp(left, EDGE, maxLeft)
+      const nextTop = clamp(top, EDGE, maxTop)
+      const maxHeight = Math.max(160, window.innerHeight - nextTop - EDGE)
+      state.panelPosition = { left: nextLeft, top: nextTop, maxHeight }
+      host.style.left = `${nextLeft}px`
+      host.style.top = `${nextTop}px`
+      host.style.maxHeight = `${maxHeight}px`
+      panel.style.maxHeight = `${maxHeight}px`
+    }
+
+    function onPanelDragStart(event) {
+      if (event.button !== 0 || !state || !state.panel) return
+      if (event.target.closest && event.target.closest('button, select, a')) return
+      event.preventDefault()
+      event.stopPropagation()
+      const rect = host.getBoundingClientRect()
+      panelDrag = {
+        startX: event.clientX,
+        startY: event.clientY,
+        left: rect.left,
+        top: rect.top,
+      }
+      panel.classList.add('wt-dragging')
+      document.addEventListener('mousemove', onPanelDragMove, true)
+      document.addEventListener('mouseup', onPanelDragEnd, true)
+    }
+
+    function onPanelDragMove(event) {
+      if (!panelDrag) return
+      event.preventDefault()
+      updatePanelPosition(
+        panelDrag.left + event.clientX - panelDrag.startX,
+        panelDrag.top + event.clientY - panelDrag.startY,
+      )
+    }
+
+    function onPanelDragEnd() {
+      stopPanelDrag()
+    }
+
+    panelHead.addEventListener('mousedown', onPanelDragStart)
+
     function close() {
+      stopPanelDrag()
       if (state) dismissed = { text: state.text }
       requestSeq += 1
       if (abortRequest) {
@@ -536,6 +599,7 @@
     }
 
     function openBar(snapshot) {
+      stopPanelDrag()
       dismissed = null
       if (abortRequest) {
         abortRequest.abort()
@@ -551,6 +615,7 @@
         anchor: snapshot.anchor,
         bar: barGeometry(snapshot.anchor),
         panel: null,
+        panelPosition: null,
         detected,
         target: detected === 'zh' ? 'en' : 'zh',
         targetMode: 'auto',
@@ -808,6 +873,7 @@
 
     function backToBar() {
       if (!state) return
+      stopPanelDrag()
       requestSeq += 1
       if (abortRequest) {
         abortRequest.abort()
@@ -817,6 +883,7 @@
       clearCopied()
       state.phase = 'bar'
       state.panel = null
+      state.panelPosition = null
       state.status = 'idle'
       state.result = ''
       state.summary = ''
@@ -869,6 +936,10 @@
     }
 
     const onMouseUp = (event) => {
+      if (panelDrag) {
+        stopPanelDrag()
+        return
+      }
       if (event.button !== 0) return
       if (eventInsideUi(event)) return
       const down = pointerDown

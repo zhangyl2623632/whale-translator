@@ -285,6 +285,19 @@
   overflow: hidden;
   color: #f2f8ff;
   background: linear-gradient(132deg, #0b1e38 0%, #08182c 48%, #0b2933 100%);
+  cursor: move;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.wt-panel.wt-dragging,
+.wt-panel.wt-dragging .wt-head {
+  cursor: grabbing;
+}
+
+.wt-head-actions,
+.wt-head-actions * {
+  cursor: pointer;
 }
 
 .wt-head::before {

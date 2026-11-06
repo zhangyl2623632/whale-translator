@@ -9,7 +9,8 @@
 - CRX ID: `ifophleakjkknlbldgjkoblmkmocnocf`
 - Publisher: individual (no company required)
 - Recommended visibility: **Hidden** (share the listing URL; no public search)
-- Current version: `1.0.0`
+- Live store version: `1.0.0`
+- Prepared update: `1.1.0` — draggable result card
 - This kit is retained for future updates.
 
 这个目录保留为 **Microsoft Edge 加载项**的上架材料，当前版本已上架；后续更新按同样的 listing/隐私材料提交。
@@ -19,7 +20,8 @@
 - CRX ID：`ifophleakjkknlbldgjkoblmkmocnocf`
 - 发布者：个人（不需要公司）
 - 可见性：**Hidden**（分享链接，商店搜索不到）
-- 当前版本：`1.0.0`
+- 商店当前版本：`1.0.0`
+- 已准备更新：`1.1.0` — 译文卡片可拖动
 - 本目录用于后续版本更新。
 
 ## What is ready
@@ -45,7 +47,7 @@ powershell -ExecutionPolicy Bypass -File .\store\build-package.ps1
 Output:
 
 ```text
-store/dist/whale-translator-1.0.0.zip
+store/dist/whale-translator-1.1.0.zip
 ```
 
 ## Original submission steps (completed for 1.0.0)

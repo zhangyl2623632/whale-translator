@@ -25,6 +25,7 @@ This folder is the unpacked Manifest V3 extension. The full product manual cover
 - **Not supported:** `edge://`, `chrome://`, the extension store, and other desktop apps. / 不支持浏览器内部页面、扩展商店和其他桌面应用。
 - **Outbound data:** selected text is sent only after **Translate** is clicked, to `edge.microsoft.com`. No history, no disk writes. / 只在点击翻译后发送选中文字到 `edge.microsoft.com`，不保存历史、不写磁盘。
 - **Toolbar icon:** opens a small usage popup; it is not the translation trigger. / 工具栏图标打开使用说明，不是翻译触发按钮。
+- **Draggable panel:** press and drag the panel header to move the result card. / 按住卡片头部即可拖动译文卡片。
 
 The extension is **live** in Microsoft Edge Add-ons as a hidden listing: https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf. The store kit is retained in [`../store`](../store/README.md). / 扩展已在 Microsoft Edge 加载项上架（Hidden）：https://microsoftedge.microsoft.com/addons/detail/ifophleakjkknlbldgjkoblmkmocnocf，上架材料保留在 [`../store`](../store/README.md)。
 

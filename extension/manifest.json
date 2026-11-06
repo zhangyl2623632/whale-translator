@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "鲸译 · 划词翻译",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "在任意网页选中文字，点「翻译」在中英之间互译；保留原有换行，只在点击后发送文字。",
   "homepage_url": "https://github.com/zhangyl2623632/whale-translator",
   "minimum_chrome_version": "102",
